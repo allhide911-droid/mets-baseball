@@ -8,19 +8,19 @@ export default function Header() {
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold text-blue-700">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <Link href="/" className="text-base font-bold text-blue-700 whitespace-nowrap shrink-0">
           昭島美堀メッツ少年野球チームメンバー募集
         </Link>
 
         {/* PC用ナビ */}
-        <nav className="hidden md:flex gap-6 text-sm font-medium text-gray-700">
-          <Link href="/about" className="hover:text-blue-600">チーム紹介</Link>
-          <Link href="/faq" className="hover:text-blue-600">費用・FAQ</Link>
-          <Link href="/results" className="hover:text-blue-600">大会実績</Link>
-          <Link href="/events" className="hover:text-blue-600">イベント</Link>
-          <Link href="/trial" className="hover:text-blue-600">体験会日程</Link>
-          <Link href="/apply" className="bg-blue-600 text-white px-4 py-1.5 rounded-full hover:bg-blue-700">
+        <nav className="hidden md:flex items-center gap-1 text-sm font-bold text-gray-700">
+          <Link href="/about" className="px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition whitespace-nowrap">チーム紹介</Link>
+          <Link href="/faq" className="px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition whitespace-nowrap">費用・FAQ</Link>
+          <Link href="/results" className="px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition whitespace-nowrap">大会実績</Link>
+          <Link href="/events" className="px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition whitespace-nowrap">イベント</Link>
+          <Link href="/trial" className="px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition whitespace-nowrap">体験会日程</Link>
+          <Link href="/apply" className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition whitespace-nowrap ml-2">
             体験申込
           </Link>
         </nav>

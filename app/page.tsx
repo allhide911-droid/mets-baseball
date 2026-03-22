@@ -10,27 +10,22 @@ const features = [
   { icon: "🏆", title: "実績", desc: "地区大会で上位入賞の実績があります" },
 ];
 
-const recentResults = [
-  { date: "2026/03/15", opponent: "東部ライオンズ", score: "5-3", result: "勝ち" },
-  { date: "2026/03/08", opponent: "西部タイガース", score: "2-4", result: "負け" },
-  { date: "2026/03/01", opponent: "南部イーグルス", score: "7-7", result: "引き分け" },
-];
-
 
 export default function Home() {
   return (
     <div>
       {/* ヒーローセクション */}
-      <section className="relative bg-blue-900 text-white px-8 py-16">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative text-white px-8 py-16" style={{ backgroundImage: "url('/Gemini_Generated_Image_4hkuxd4hkuxd4hku (1).png')", backgroundSize: "cover", backgroundPosition: "center" }}>
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <div className="mb-4">
             <Image src="/logo.png" alt="昭島美堀メッツ ロゴ" width={300} height={95} className="object-contain drop-shadow-lg" />
           </div>
-          <h1 className="text-5xl font-black mb-4 leading-tight text-white">
+          <h1 className="text-5xl font-black mb-4 leading-tight text-white drop-shadow-lg">
             一緒に野球しよう！
           </h1>
-          <p className="text-xl mb-8 font-bold text-white">
-            小学生はもちろん、年長さん・初心者・女の子も大歓迎。<br />体験申込いつでも受付中です。
+          <p className="text-2xl mb-8 font-black text-white drop-shadow-lg">
+            小学生大募集!!!初心者、女の子も大歓迎です!!
           </p>
           <div className="flex flex-wrap gap-4 items-center">
             <Link
