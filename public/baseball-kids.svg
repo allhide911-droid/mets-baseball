@@ -1,0 +1,116 @@
+<svg viewBox="0 0 340 290" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- ===== 男の子（左） ===== -->
+  <!-- 帽子 -->
+  <path d="M 60 80 Q 92 58 124 80 L 120 86 Q 92 66 64 86 Z" fill="#1B3A8C"/>
+  <rect x="60" y="78" width="64" height="10" rx="5" fill="#1B3A8C"/>
+  <path d="M 56 87 Q 92 93 128 87 L 125 93 Q 92 100 59 93 Z" fill="#152D6E"/>
+  <text x="83" y="86" fill="white" font-size="12" font-family="Arial Black" font-weight="900">M</text>
+  <!-- 頭 -->
+  <circle cx="92" cy="108" r="34" fill="#F5C6A0"/>
+  <!-- 耳 -->
+  <ellipse cx="58" cy="110" rx="8" ry="10" fill="#F5C6A0"/>
+  <ellipse cx="126" cy="110" rx="8" ry="10" fill="#F5C6A0"/>
+  <!-- 目 -->
+  <ellipse cx="80" cy="106" rx="7" ry="8" fill="white"/>
+  <ellipse cx="104" cy="106" rx="7" ry="8" fill="white"/>
+  <circle cx="81" cy="107" r="5" fill="#333"/>
+  <circle cx="105" cy="107" r="5" fill="#333"/>
+  <circle cx="82" cy="106" r="2" fill="white"/>
+  <circle cx="106" cy="106" r="2" fill="white"/>
+  <!-- 眉 -->
+  <path d="M 74 97 Q 80 93 86 97" stroke="#5a3a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 98 97 Q 104 93 110 97" stroke="#5a3a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- 笑顔 -->
+  <path d="M 80 122 Q 92 134 104 122" stroke="#cc6655" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- ほっぺ -->
+  <ellipse cx="68" cy="118" rx="9" ry="6" fill="#FFB0A0" opacity="0.55"/>
+  <ellipse cx="116" cy="118" rx="9" ry="6" fill="#FFB0A0" opacity="0.55"/>
+  <!-- 首 -->
+  <rect x="84" y="138" width="16" height="12" fill="#F5C6A0"/>
+  <!-- ユニフォーム -->
+  <path d="M 54 152 Q 54 146 92 144 Q 130 146 130 152 L 134 220 L 50 220 Z" fill="white"/>
+  <path d="M 92 144 L 83 162 M 92 144 L 101 162" stroke="#1B3A8C" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- ユニフォーム番号 -->
+  <text x="78" y="200" fill="#1B3A8C" font-size="28" font-family="Arial Black" font-weight="900">5</text>
+  <!-- 左腕（バット） -->
+  <path d="M 55 158 L 18 182" stroke="#F5C6A0" stroke-width="15" stroke-linecap="round"/>
+  <!-- バット -->
+  <rect x="2" y="162" width="11" height="58" rx="5.5" fill="#A07830" transform="rotate(-25 7 191)"/>
+  <ellipse cx="7" cy="162" rx="8" ry="5" fill="#C09040" transform="rotate(-25 7 191)"/>
+  <!-- 右腕 -->
+  <path d="M 129 158 L 158 140" stroke="#F5C6A0" stroke-width="15" stroke-linecap="round"/>
+  <circle cx="163" cy="137" r="11" fill="#F5C6A0"/>
+  <!-- ズボン -->
+  <path d="M 58 220 L 52 275 L 80 275 L 92 238 L 104 275 L 132 275 L 126 220 Z" fill="#1B3A8C"/>
+  <!-- 靴 -->
+  <ellipse cx="66" cy="276" rx="18" ry="9" fill="#222"/>
+  <ellipse cx="118" cy="276" rx="18" ry="9" fill="#222"/>
+
+  <!-- ===== 女の子（右） ===== -->
+  <!-- ポニーテール -->
+  <path d="M 268 72 C 292 52 300 82 284 96" stroke="#4a2a0a" stroke-width="13" stroke-linecap="round" fill="none"/>
+  <!-- 帽子 -->
+  <path d="M 200 80 Q 232 58 264 80 L 260 86 Q 232 66 204 86 Z" fill="#1B3A8C"/>
+  <rect x="200" y="78" width="64" height="10" rx="5" fill="#1B3A8C"/>
+  <path d="M 196 87 Q 232 93 268 87 L 265 93 Q 232 100 199 93 Z" fill="#152D6E"/>
+  <text x="223" y="86" fill="white" font-size="12" font-family="Arial Black" font-weight="900">M</text>
+  <!-- 頭 -->
+  <circle cx="232" cy="108" r="34" fill="#F5C6A0"/>
+  <!-- 耳 -->
+  <ellipse cx="198" cy="110" rx="8" ry="10" fill="#F5C6A0"/>
+  <ellipse cx="266" cy="110" rx="8" ry="10" fill="#F5C6A0"/>
+  <!-- 目（大きくかわいい） -->
+  <ellipse cx="220" cy="104" rx="8" ry="9" fill="white"/>
+  <ellipse cx="244" cy="104" rx="8" ry="9" fill="white"/>
+  <circle cx="221" cy="105" r="6" fill="#333"/>
+  <circle cx="245" cy="105" r="6" fill="#333"/>
+  <circle cx="222" cy="104" r="2.2" fill="white"/>
+  <circle cx="246" cy="104" r="2.2" fill="white"/>
+  <!-- まつ毛 -->
+  <line x1="213" y1="97" x2="210" y2="93" stroke="#333" stroke-width="1.5"/>
+  <line x1="218" y1="95" x2="217" y2="91" stroke="#333" stroke-width="1.5"/>
+  <line x1="223" y1="95" x2="223" y2="91" stroke="#333" stroke-width="1.5"/>
+  <line x1="237" y1="95" x2="237" y2="91" stroke="#333" stroke-width="1.5"/>
+  <line x1="242" y1="95" x2="243" y2="91" stroke="#333" stroke-width="1.5"/>
+  <line x1="247" y1="97" x2="250" y2="93" stroke="#333" stroke-width="1.5"/>
+  <!-- 眉 -->
+  <path d="M 213 95 Q 220 91 227 95" stroke="#5a3a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 237 95 Q 244 91 251 95" stroke="#5a3a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- 笑顔 -->
+  <path d="M 220 122 Q 232 136 244 122" stroke="#cc6655" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- ほっぺ -->
+  <ellipse cx="207" cy="116" rx="10" ry="7" fill="#FFB0A0" opacity="0.6"/>
+  <ellipse cx="257" cy="116" rx="10" ry="7" fill="#FFB0A0" opacity="0.6"/>
+  <!-- 首 -->
+  <rect x="224" y="138" width="16" height="12" fill="#F5C6A0"/>
+  <!-- ユニフォーム -->
+  <path d="M 194 152 Q 194 146 232 144 Q 270 146 270 152 L 274 220 L 190 220 Z" fill="white"/>
+  <path d="M 232 144 L 223 162 M 232 144 L 241 162" stroke="#1B3A8C" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- ユニフォーム番号 -->
+  <text x="218" y="200" fill="#1B3A8C" font-size="28" font-family="Arial Black" font-weight="900">7</text>
+  <!-- 左腕（グローブ） -->
+  <path d="M 196 158 L 164 180" stroke="#F5C6A0" stroke-width="15" stroke-linecap="round"/>
+  <!-- グローブ -->
+  <circle cx="157" cy="185" r="20" fill="#8B5E1A"/>
+  <path d="M 143 177 Q 155 190 170 177" stroke="#6B4510" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- ボール -->
+  <circle cx="157" cy="183" r="10" fill="white"/>
+  <path d="M 150 177 Q 153 183 150 189" stroke="#CC4444" stroke-width="1.5" fill="none"/>
+  <path d="M 164 177 Q 161 183 164 189" stroke="#CC4444" stroke-width="1.5" fill="none"/>
+  <!-- 右腕（上げてる） -->
+  <path d="M 269 158 L 298 138" stroke="#F5C6A0" stroke-width="15" stroke-linecap="round"/>
+  <circle cx="303" cy="135" r="11" fill="#F5C6A0"/>
+  <!-- ズボン -->
+  <path d="M 198 220 L 192 275 L 220 275 L 232 238 L 244 275 L 272 275 L 266 220 Z" fill="#1B3A8C"/>
+  <!-- 靴 -->
+  <ellipse cx="206" cy="276" rx="18" ry="9" fill="#222"/>
+  <ellipse cx="258" cy="276" rx="18" ry="9" fill="#222"/>
+
+  <!-- 装飾（星・きらめき） -->
+  <text x="158" y="42" fill="#FFD700" font-size="22" font-family="Arial">★</text>
+  <text x="306" y="60" fill="#FFD700" font-size="16" font-family="Arial">★</text>
+  <text x="10" y="140" fill="#FFD700" font-size="14" font-family="Arial">✦</text>
+  <text x="320" y="220" fill="#FFD700" font-size="14" font-family="Arial">✦</text>
+
+</svg>
