@@ -23,4 +23,10 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Meiryo UI", "Meiryo", "Yu Gothic UI", "MS Gothic", sans-serif;
+  font-weight: bold;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a, li, td, th, label, button {
+  font-family: "Meiryo UI", "Meiryo", "Yu Gothic UI", "MS Gothic", sans-serif;
+  font-weight: bold;
 }

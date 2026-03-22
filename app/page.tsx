@@ -22,36 +22,45 @@ export default function Home() {
     <div>
       {/* ヒーローセクション */}
       <section
-        className="relative text-white py-16 px-8"
+        className="relative text-white px-8"
         style={{
           backgroundImage: "url('/Gemini_Generated_Image_f9sru0f9sru0f9sr.png')",
           backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundPosition: "center top",
+          minHeight: "85vh",
+          display: "flex",
+          alignItems: "flex-end",
+          paddingBottom: "3rem",
         }}
       >
-        <div className="relative z-10 max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          {/* テキスト */}
-          <div className="flex flex-col items-start text-left">
-            <div className="mb-4">
-              <Image src="/logo.png" alt="昭島美堀メッツ ロゴ" width={280} height={90} className="object-contain drop-shadow-lg" />
-            </div>
-            <h1 className="text-4xl font-bold mb-4 leading-tight text-white"
-              style={{ textShadow: "2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000" }}>
-              一緒に野球しよう！
-            </h1>
-            <p className="text-lg mb-8 font-bold text-white"
-              style={{ textShadow: "1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000" }}>
-              小学生はもちろん、年長さん・初心者・女の子も大歓迎。<br />体験申込いつでも受付中です。
-            </p>
+        {/* 下部グラデーションオーバーレイ（文字を読みやすく） */}
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(to top, rgba(0,0,20,0.75) 0%, rgba(0,0,20,0.3) 50%, rgba(0,0,0,0) 100%)"
+        }} />
+
+        <div className="relative z-10 max-w-5xl mx-auto w-full">
+          <div className="mb-4">
+            <Image src="/logo.png" alt="昭島美堀メッツ ロゴ" width={300} height={95} className="object-contain drop-shadow-lg" />
+          </div>
+          <h1 className="text-5xl font-black mb-4 leading-tight text-white"
+            style={{ textShadow: "3px 3px 6px rgba(0,0,0,0.9), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000" }}>
+            一緒に野球しよう！
+          </h1>
+          <p className="text-xl mb-8 font-bold text-white"
+            style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.9), -1px -1px 0 rgba(0,0,0,0.8), 1px -1px 0 rgba(0,0,0,0.8)" }}>
+            小学生はもちろん、年長さん・初心者・女の子も大歓迎。<br />体験申込いつでも受付中です。
+          </p>
+          <div className="flex flex-wrap gap-4 items-center">
             <Link
               href="/apply"
-              className="bg-yellow-400 text-gray-900 font-bold px-8 py-3 rounded-full text-lg hover:bg-yellow-300 transition"
+              className="bg-yellow-400 text-gray-900 font-black px-10 py-4 rounded-full text-xl hover:bg-yellow-300 transition shadow-lg"
             >
               体験を申し込む
             </Link>
             <HowToUseModal />
           </div>
         </div>
+
         {/* 管理者ログインボタン */}
         <div className="absolute bottom-4 right-4">
           <Link
