@@ -26,7 +26,6 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
-  const [showBookmarkBanner, setShowBookmarkBanner] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,18 +38,7 @@ export default function ChatPage() {
       if (data) setApplicant(data as Applicant);
     };
     fetchApplicant();
-
-    // 初回訪問時のみブックマークバナーを表示
-    const bookmarkKey = `bookmarked_${id}`;
-    if (!localStorage.getItem(bookmarkKey)) {
-      setShowBookmarkBanner(true);
-    }
   }, [id]);
-
-  const dismissBookmarkBanner = () => {
-    localStorage.setItem(`bookmarked_${id}`, "true");
-    setShowBookmarkBanner(false);
-  };
 
   const fetchMessages = async () => {
     const { data } = await supabase
@@ -99,23 +87,17 @@ export default function ChatPage() {
         </p>
       </div>
 
-      {/* ブックマーク案内バナー */}
-      {showBookmarkBanner && (
-        <div className="bg-yellow-50 border border-yellow-300 rounded-xl px-4 py-3 mb-4 flex items-start justify-between gap-3">
-          <div>
-            <p className="text-sm font-bold text-yellow-800">🔖 このページをブックマーク登録してください</p>
-            <p className="text-xs text-yellow-700 mt-1">
-              このURLは再発行できません。スタッフからの返信を確認するために、ブラウザのブックマーク（お気に入り）に保存しておいてください。
-            </p>
-          </div>
-          <button
-            onClick={dismissBookmarkBanner}
-            className="text-yellow-600 hover:text-yellow-800 text-lg font-bold shrink-0"
-          >
-            ✕
-          </button>
+
+      {/* 再開方法の案内 */}
+      <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 mb-4 flex items-start gap-3">
+        <span className="text-2xl shrink-0">📱</span>
+        <div>
+          <p className="text-sm font-bold text-green-800">このチャットはいつでも再開できます</p>
+          <p className="text-xs text-green-700 mt-1">
+            次回は <strong>トップページ</strong> を開くと「前回のチャットの続きはこちら」ボタンが表示されます。そこからすぐに戻れます。
+          </p>
         </div>
-      )}
+      </div>
 
       {/* 申込内容の確認 */}
       {applicant && (
