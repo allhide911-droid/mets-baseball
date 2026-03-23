@@ -87,6 +87,7 @@ export default function ApplyPage() {
       return;
     }
 
+    localStorage.setItem("mets_chat_id", newId);
     router.push(`/chat/${newId}`);
   };
 

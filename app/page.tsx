@@ -3,6 +3,7 @@ import Image from "next/image";
 import HowToUseModal from "@/components/HowToUseModal";
 import TrialCalendar from "@/components/TrialCalendar";
 import NextTrial from "@/components/NextTrial";
+import ResumeChatBanner from "@/components/ResumeChatBanner";
 
 const features = [
   { icon: "😄", title: "楽しく", desc: "勝ち負けより野球を好きになることを大切にしています" },
@@ -47,6 +48,11 @@ export default function Home() {
             管理者ログイン
           </Link>
         </div>
+      </section>
+
+      {/* 前回チャット再開バナー */}
+      <section className="max-w-5xl mx-auto px-4 pt-6">
+        <ResumeChatBanner />
       </section>
 
       {/* カレンダー＋次回体験会 */}
