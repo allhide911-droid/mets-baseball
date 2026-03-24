@@ -15,7 +15,7 @@ const fields = [
 
 function Preview(data: FlyerData, _font: string, _fontSize: string, imageData: string | null, imageType: string | null) {
   return (
-    <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-6" style={{ fontFamily: font }}>
+    <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-6" style={{ fontFamily: _font }}>
       <div className="text-center mb-6">
         <div className="inline-block bg-blue-700 text-white text-3xl font-black px-6 py-2 rounded-full mb-3">
           ⚾ 体験会のお知らせ
