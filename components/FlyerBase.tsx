@@ -6,6 +6,7 @@ import DateTimeRangePicker from "@/components/DateTimeRangePicker";
 
 export type FlyerData = Record<string, string>;
 export type FontSizes = Record<string, string>;
+export type Alignments = Record<string, string>;
 
 const SIZE_OPTIONS = [
   { label: "小", value: "0.8rem" },
@@ -20,6 +21,7 @@ type SavedFlyer = {
   createdAt: string;
   font: string;
   fontSizes: FontSizes;
+  alignments: Alignments;
   imageData: string | null;
   imageType: string | null;
   data: FlyerData;
@@ -46,8 +48,31 @@ type Props = {
   storageKey: string;
   title: string;
   fields: Field[];
-  renderPreview: (data: FlyerData, font: string, fontSizes: FontSizes, imageData: string | null, imageType: string | null) => ReactNode;
+  renderPreview: (data: FlyerData, font: string, fontSizes: FontSizes, alignments: Alignments, imageData: string | null, imageType: string | null) => ReactNode;
 };
+
+function AlignSelector({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const options = [
+    { label: "←", value: "left", title: "左揃え" },
+    { label: "≡", value: "center", title: "中央揃え" },
+    { label: "→", value: "right", title: "右揃え" },
+  ];
+  return (
+    <div className="flex gap-1 mt-1">
+      {options.map(o => (
+        <button
+          key={o.value}
+          type="button"
+          title={o.title}
+          onClick={() => onChange(o.value)}
+          className={`px-2 py-0.5 rounded text-xs border transition ${value === o.value ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-500 border-gray-300 hover:border-blue-400"}`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 function SizeSelector({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
@@ -70,6 +95,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
   const [data, setData] = useState<FlyerData>({});
   const [font, setFont] = useState(FONTS[0].value);
   const [fontSizes, setFontSizes] = useState<FontSizes>({ title: "1.7rem" });
+  const [alignments, setAlignments] = useState<Alignments>({ title: "center" });
   const [imageData, setImageData] = useState<string | null>(null);
   const [imageType, setImageType] = useState<string | null>(null);
   const [savedFlyers, setSavedFlyers] = useState<SavedFlyer[]>([]);
@@ -78,6 +104,8 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
 
   const setSize = (key: string, value: string) => setFontSizes(prev => ({ ...prev, [key]: value }));
   const getSize = (key: string, def = "1rem") => fontSizes[key] ?? def;
+  const setAlign = (key: string, value: string) => setAlignments(prev => ({ ...prev, [key]: value }));
+  const getAlign = (key: string, def = "left") => alignments[key] ?? def;
 
   useEffect(() => {
     const saved = localStorage.getItem(storageKey);
@@ -103,6 +131,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
       createdAt: new Date().toISOString(),
       font,
       fontSizes,
+      alignments,
       imageData,
       imageType,
       data,
@@ -120,6 +149,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
     setData(flyer.data);
     setFont(flyer.font);
     setFontSizes(flyer.fontSizes ?? { title: "1.7rem" });
+    setAlignments(flyer.alignments ?? { title: "center" });
     setImageData(flyer.imageData);
     setImageType(flyer.imageType);
     setEditingId(flyer.id);
@@ -139,6 +169,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
     setData(initial);
     setFont(FONTS[0].value);
     setFontSizes({ title: "1.7rem" });
+    setAlignments({ title: "center" });
     setImageData(null);
     setImageType(null);
     setEditingId(null);
@@ -178,10 +209,11 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
         <h2 className="text-lg font-bold text-gray-700 mb-4">チラシ内容を入力</h2>
         <div className="grid grid-cols-1 gap-5">
 
-          {/* タイトル文字サイズ */}
+          {/* タイトル文字サイズ・整列 */}
           <div className="bg-gray-50 rounded-lg px-4 py-3">
-            <label className="text-sm font-bold text-gray-600 block mb-1">タイトルの文字サイズ</label>
+            <label className="text-sm font-bold text-gray-600 block mb-1">タイトルの文字サイズ・位置</label>
             <SizeSelector value={getSize("title", "1.7rem")} onChange={v => setSize("title", v)} />
+            <AlignSelector value={getAlign("title", "center")} onChange={v => setAlign("title", v)} />
           </div>
 
           {/* 各フィールド */}
@@ -194,7 +226,10 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
                     value={data[field.key] || ""}
                     onChange={v => setData({ ...data, [field.key]: v })}
                   />
-                  <SizeSelector value={getSize(field.key)} onChange={v => setSize(field.key, v)} />
+                  <div className="flex gap-4 mt-1">
+                    <SizeSelector value={getSize(field.key)} onChange={v => setSize(field.key, v)} />
+                    <AlignSelector value={getAlign(field.key)} onChange={v => setAlign(field.key, v)} />
+                  </div>
                 </>
               ) : field.checkbox ? (
                 <div className="flex items-center gap-2">
@@ -216,7 +251,10 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
                     rows={2}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
-                  <SizeSelector value={getSize(field.key)} onChange={v => setSize(field.key, v)} />
+                  <div className="flex gap-4 mt-1">
+                    <SizeSelector value={getSize(field.key)} onChange={v => setSize(field.key, v)} />
+                    <AlignSelector value={getAlign(field.key)} onChange={v => setAlign(field.key, v)} />
+                  </div>
                 </>
               ) : (
                 <>
@@ -227,7 +265,10 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
                     placeholder={field.placeholder}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
-                  <SizeSelector value={getSize(field.key)} onChange={v => setSize(field.key, v)} />
+                  <div className="flex gap-4 mt-1">
+                    <SizeSelector value={getSize(field.key)} onChange={v => setSize(field.key, v)} />
+                    <AlignSelector value={getAlign(field.key)} onChange={v => setAlign(field.key, v)} />
+                  </div>
                 </>
               )}
             </div>
@@ -292,7 +333,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
 
       {/* プレビュー */}
       <div style={{ fontFamily: font }}>
-        {renderPreview(data, font, fontSizes, imageData, imageType)}
+        {renderPreview(data, font, fontSizes, alignments, imageData, imageType)}
       </div>
 
       <style>{`

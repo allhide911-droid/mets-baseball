@@ -1,6 +1,6 @@
 "use client";
 
-import FlyerBase, { FlyerData, FontSizes } from "@/components/FlyerBase";
+import FlyerBase, { FlyerData, FontSizes, Alignments } from "@/components/FlyerBase";
 import { QRCodeSVG } from "qrcode.react";
 
 const APPLY_URL = "https://mets-baseball.vercel.app/apply";
@@ -15,16 +15,17 @@ const fields = [
 ];
 
 const fs = (sizes: FontSizes, key: string, def = "1rem") => sizes[key] ?? def;
+const fa = (aligns: Alignments, key: string, def = "left") => aligns[key] ?? def;
 
-function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, imageData: string | null, imageType: string | null) {
+function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, alignments: Alignments, imageData: string | null, imageType: string | null) {
   return (
     <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-6">
-      <div className="text-center mb-6">
+      <div className="mb-6" style={{ textAlign: fa(alignments, "title", "center") as "left"|"center"|"right" }}>
         <div className="inline-block bg-blue-700 text-white font-black px-6 py-2 rounded-full mb-3" style={{ fontSize: fs(fontSizes, "title", "1.7rem") }}>
           ⚾ メンバー募集中！
         </div>
-        <h1 className="font-black text-gray-800 mt-2" style={{ fontSize: fs(fontSizes, "teamName", "1.4rem") }}>{data.teamName || "昭島美堀メッツ"} 少年野球チーム</h1>
-        <p className="font-black text-red-500 mt-2" style={{ fontSize: fs(fontSizes, "target", "1.1rem") }}>{data.target}</p>
+        <h1 className="font-black text-gray-800 mt-2" style={{ fontSize: fs(fontSizes, "teamName", "1.4rem"), textAlign: fa(alignments, "teamName", "center") as "left"|"center"|"right" }}>{data.teamName || "昭島美堀メッツ"} 少年野球チーム</h1>
+        <p className="font-black text-red-500 mt-2" style={{ fontSize: fs(fontSizes, "target", "1.1rem"), textAlign: fa(alignments, "target", "center") as "left"|"center"|"right" }}>{data.target}</p>
       </div>
 
       {imageData && (
@@ -43,25 +44,25 @@ function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, imageData
             {data.schedule && (
               <tr className="border-b border-blue-100">
                 <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap w-28 text-sm">📅 活動日時</td>
-                <td className="py-3 font-bold text-gray-800" style={{ fontSize: fs(fontSizes, "schedule") }}>{data.schedule}</td>
+                <td className="py-3 font-bold text-gray-800" style={{ fontSize: fs(fontSizes, "schedule"), textAlign: fa(alignments, "schedule") as "left"|"center"|"right" }}>{data.schedule}</td>
               </tr>
             )}
             {data.location && (
               <tr className="border-b border-blue-100">
                 <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap text-sm">📍 活動場所</td>
-                <td className="py-3 font-bold text-gray-800" style={{ fontSize: fs(fontSizes, "location") }}>{data.location}</td>
+                <td className="py-3 font-bold text-gray-800" style={{ fontSize: fs(fontSizes, "location"), textAlign: fa(alignments, "location") as "left"|"center"|"right" }}>{data.location}</td>
               </tr>
             )}
             {data.fee && (
               <tr className={data.notes ? "border-b border-blue-100" : ""}>
                 <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap text-sm">💴 費用</td>
-                <td className="py-3 text-gray-700" style={{ fontSize: fs(fontSizes, "fee") }}>{data.fee}</td>
+                <td className="py-3 text-gray-700" style={{ fontSize: fs(fontSizes, "fee"), textAlign: fa(alignments, "fee") as "left"|"center"|"right" }}>{data.fee}</td>
               </tr>
             )}
             {data.notes && (
               <tr>
                 <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap text-sm">📝 備考</td>
-                <td className="py-3 text-gray-700" style={{ fontSize: fs(fontSizes, "notes") }}>{data.notes}</td>
+                <td className="py-3 text-gray-700" style={{ fontSize: fs(fontSizes, "notes"), textAlign: fa(alignments, "notes") as "left"|"center"|"right" }}>{data.notes}</td>
               </tr>
             )}
           </tbody>
