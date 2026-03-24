@@ -13,7 +13,7 @@ const fields = [
   { key: "noReservation", label: "申込不要表示", placeholder: "「申込不要・当日参加OK！」を表示する", checkbox: true },
 ];
 
-function Preview(data: FlyerData, font: string, imageData: string | null, imageType: string | null) {
+function Preview(data: FlyerData, _font: string, _fontSize: string, imageData: string | null, imageType: string | null) {
   return (
     <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-6" style={{ fontFamily: font }}>
       <div className="text-center mb-6">

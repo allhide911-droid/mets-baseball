@@ -5,11 +5,19 @@ import Link from "next/link";
 
 export type FlyerData = Record<string, string>;
 
+export const FONT_SIZES = [
+  { label: "小", value: "0.85" },
+  { label: "標準", value: "1" },
+  { label: "大", value: "1.15" },
+  { label: "特大", value: "1.3" },
+];
+
 type SavedFlyer = {
   id: string;
   name: string;
   createdAt: string;
   font: string;
+  fontSize: string;
   imageData: string | null;
   imageType: string | null;
   data: FlyerData;
@@ -35,12 +43,13 @@ type Props = {
   storageKey: string;
   title: string;
   fields: Field[];
-  renderPreview: (data: FlyerData, font: string, imageData: string | null, imageType: string | null) => ReactNode;
+  renderPreview: (data: FlyerData, font: string, fontSize: string, imageData: string | null, imageType: string | null) => ReactNode;
 };
 
 export default function FlyerBase({ storageKey, title, fields, renderPreview }: Props) {
   const [data, setData] = useState<FlyerData>({});
   const [font, setFont] = useState(FONTS[0].value);
+  const [fontSize, setFontSize] = useState("1");
   const [imageData, setImageData] = useState<string | null>(null);
   const [imageType, setImageType] = useState<string | null>(null);
   const [savedFlyers, setSavedFlyers] = useState<SavedFlyer[]>([]);
@@ -73,6 +82,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
       name,
       createdAt: new Date().toISOString(),
       font,
+      fontSize,
       imageData,
       imageType,
       data,
@@ -89,6 +99,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
   const handleLoad = (flyer: SavedFlyer) => {
     setData(flyer.data);
     setFont(flyer.font);
+    setFontSize(flyer.fontSize ?? "1");
     setImageData(flyer.imageData);
     setImageType(flyer.imageType);
     setEditingId(flyer.id);
@@ -107,6 +118,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
     fields.forEach(f => { initial[f.key] = f.defaultValue ?? ""; });
     setData(initial);
     setFont(FONTS[0].value);
+    setFontSize("1");
     setImageData(null);
     setImageType(null);
     setEditingId(null);
@@ -196,6 +208,23 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
             </div>
           </div>
 
+          {/* 文字サイズ選択 */}
+          <div>
+            <label className="text-sm font-bold text-gray-600 block mb-2">文字の大きさ</label>
+            <div className="flex flex-wrap gap-2">
+              {FONT_SIZES.map(s => (
+                <button
+                  key={s.value}
+                  onClick={() => setFontSize(s.value)}
+                  className={`px-4 py-2 rounded-full border transition ${fontSize === s.value ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300 hover:border-blue-400"}`}
+                  style={{ fontSize: `${parseFloat(s.value) * 0.875}rem` }}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* 画像・PDFアップロード */}
           <div>
             <label className="text-sm font-bold text-gray-600 block mb-2">画像・PDF をチラシに追加</label>
@@ -237,8 +266,8 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
       </div>
 
       {/* プレビュー */}
-      <div style={{ fontFamily: font }}>
-        {renderPreview(data, font, imageData, imageType)}
+      <div style={{ fontFamily: font, fontSize: `${parseFloat(fontSize) * 16}px` }}>
+        {renderPreview(data, font, fontSize, imageData, imageType)}
       </div>
 
       <style>{`

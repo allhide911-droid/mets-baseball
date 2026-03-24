@@ -14,7 +14,7 @@ const fields = [
   { key: "notes", label: "備考", placeholder: "例：まずは体験から！お気軽にご参加ください。", multiline: true },
 ];
 
-function Preview(data: FlyerData, font: string, imageData: string | null, imageType: string | null) {
+function Preview(data: FlyerData, _font: string, _fontSize: string, imageData: string | null, imageType: string | null) {
   return (
     <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-6" style={{ fontFamily: font }}>
       <div className="text-center mb-6">
