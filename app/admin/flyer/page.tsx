@@ -1,6 +1,6 @@
 "use client";
 
-import FlyerBase, { FlyerData } from "@/components/FlyerBase";
+import FlyerBase, { FlyerData, FontSizes } from "@/components/FlyerBase";
 import { QRCodeSVG } from "qrcode.react";
 
 const APPLY_URL = "https://mets-baseball.vercel.app/apply";
@@ -13,26 +13,27 @@ const fields = [
   { key: "noReservation", label: "申込不要表示", placeholder: "「申込不要・当日参加OK！」を表示する", checkbox: true },
 ];
 
-function Preview(data: FlyerData, _font: string, _fontSize: string, imageData: string | null, imageType: string | null) {
+const fs = (sizes: FontSizes, key: string, def = "1rem") => sizes[key] ?? def;
+
+function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, imageData: string | null, imageType: string | null) {
   return (
-    <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-6" style={{ fontFamily: _font }}>
+    <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-6">
       <div className="text-center mb-6">
-        <div className="inline-block bg-blue-700 text-white text-3xl font-black px-6 py-2 rounded-full mb-3">
-          ⚾ 体験会のお知らせ
+        <div className="inline-block bg-blue-700 text-white font-black px-6 py-2 rounded-full mb-3" style={{ fontSize: fs(fontSizes, "title", "1.7rem") }}>
+          体験会のお知らせ
         </div>
-        <h1 className="text-2xl font-black text-gray-800 mt-2">昭島美堀メッツ 少年野球チーム</h1>
-        <p className="text-gray-500 text-sm mt-1">小学生・年長さん・初心者・女の子も大歓迎！</p>
+        <h1 className="font-black text-gray-800 mt-2" style={{ fontSize: fs(fontSizes, "teamName", "1.4rem") }}>昭島美堀メッツ 少年野球チーム</h1>
+        <p className="text-gray-500 mt-1" style={{ fontSize: fs(fontSizes, "subtitle", "0.9rem") }}>小学生・年長さん・初心者・女の子も大歓迎！</p>
       </div>
 
       {data.noReservation === "true" && (
         <div className="text-center mb-6">
-          <span className="inline-block bg-red-500 text-white text-xl font-black px-6 py-2 rounded-full">
+          <span className="inline-block bg-red-500 text-white font-black px-6 py-2 rounded-full" style={{ fontSize: fs(fontSizes, "noReservation", "1.2rem") }}>
             申込不要・当日参加OK！
           </span>
         </div>
       )}
 
-      {/* 追加画像・PDF */}
       {imageData && (
         <div className="mb-6 flex justify-center">
           {imageType?.startsWith("image/") ? (
@@ -44,24 +45,24 @@ function Preview(data: FlyerData, _font: string, _fontSize: string, imageData: s
       )}
 
       <div className="bg-blue-50 rounded-xl p-6 mb-6">
-        <table className="w-full text-sm">
+        <table className="w-full">
           <tbody>
             <tr className="border-b border-blue-100">
-              <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap w-28">📅 日時</td>
-              <td className="py-3 font-bold text-gray-800 text-base">{data.date || "（日時を入力してください）"}</td>
+              <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap w-28 text-sm">📅 日時</td>
+              <td className="py-3 font-bold text-gray-800" style={{ fontSize: fs(fontSizes, "date") }}>{data.date || "（日時を入力してください）"}</td>
             </tr>
             <tr className="border-b border-blue-100">
-              <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap">📍 場所</td>
-              <td className="py-3 font-bold text-gray-800 text-base">{data.location || "（場所を入力してください）"}</td>
+              <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap text-sm">📍 場所</td>
+              <td className="py-3 font-bold text-gray-800" style={{ fontSize: fs(fontSizes, "location") }}>{data.location || "（場所を入力してください）"}</td>
             </tr>
             <tr className={data.notes ? "border-b border-blue-100" : ""}>
-              <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap">🎒 持ち物</td>
-              <td className="py-3 text-gray-700">{data.items}</td>
+              <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap text-sm">🎒 持ち物</td>
+              <td className="py-3 text-gray-700" style={{ fontSize: fs(fontSizes, "items") }}>{data.items}</td>
             </tr>
             {data.notes && (
               <tr>
-                <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap">📝 備考</td>
-                <td className="py-3 text-gray-700">{data.notes}</td>
+                <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap text-sm">📝 備考</td>
+                <td className="py-3 text-gray-700" style={{ fontSize: fs(fontSizes, "notes") }}>{data.notes}</td>
               </tr>
             )}
           </tbody>
