@@ -340,6 +340,8 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Noto+Serif+JP:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Zen+Kurenaido&display=swap');
         @media print {
           .print\\:hidden { display: none !important; }
+          header { display: none !important; }
+          nav { display: none !important; }
           @page { size: A4 portrait; margin: 10mm; }
           body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           .flyer-preview { width: 190mm; min-height: 277mm; box-sizing: border-box; page-break-inside: avoid; }
