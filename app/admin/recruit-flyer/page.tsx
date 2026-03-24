@@ -71,7 +71,7 @@ function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, alignment
 
       <div className="flex flex-col sm:flex-row gap-6 items-center justify-center bg-gray-50 rounded-xl p-6">
         <div className="text-center">
-          <QRCodeSVG value={APPLY_URL} size={120} />
+          <QRCodeSVG value={APPLY_URL} size={80} />
           <p className="text-xs font-bold text-gray-600 mt-2">体験申込はこちら</p>
           <p className="text-xs text-gray-400">{APPLY_URL}</p>
         </div>
