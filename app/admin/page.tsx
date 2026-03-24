@@ -123,13 +123,25 @@ export default function AdminPage() {
         </button>
       </div>
 
-      {/* 体験会管理リンク */}
-      <div className="mb-6">
+      {/* 管理メニュー */}
+      <div className="mb-6 flex flex-wrap gap-3">
         <Link
           href="/admin/trials"
           className="inline-block bg-green-600 text-white font-bold px-6 py-2 rounded-full hover:bg-green-700 transition text-sm"
         >
           ⚾ 体験会を管理する
+        </Link>
+        <Link
+          href="/admin/flyer"
+          className="inline-block bg-orange-500 text-white font-bold px-6 py-2 rounded-full hover:bg-orange-600 transition text-sm"
+        >
+          🖨️ 体験会チラシを作成
+        </Link>
+        <Link
+          href="/admin/recruit-flyer"
+          className="inline-block bg-purple-600 text-white font-bold px-6 py-2 rounded-full hover:bg-purple-700 transition text-sm"
+        >
+          📣 メンバー募集チラシを作成
         </Link>
       </div>
 
