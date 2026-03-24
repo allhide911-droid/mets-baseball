@@ -21,7 +21,7 @@ function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, alignment
     <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-6">
       <div className="mb-6" style={{ textAlign: fa(alignments, "title", "center") as "left"|"center"|"right" }}>
         <div style={{ display: "inline-block", width: "25%" }}>
-          <h1 className="font-black text-gray-800" style={{ fontSize: fs(fontSizes, "title", "1.7rem") }}>昭島みほりメッツ野球体験会</h1>
+          <h1 className="font-black text-gray-800" style={{ fontSize: fs(fontSizes, "title", "1.7rem") }}>昭島美堀メッツ<br />野球体験会</h1>
         </div>
         <p className="text-gray-500 mt-2" style={{ fontSize: fs(fontSizes, "subtitle", "0.9rem") }}>小学生はぜひ！初心者・女の子も大歓迎！</p>
       </div>
