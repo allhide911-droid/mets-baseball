@@ -20,11 +20,10 @@ function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, alignment
   return (
     <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-6">
       <div className="mb-6" style={{ textAlign: fa(alignments, "title", "center") as "left"|"center"|"right" }}>
-        <h1 className="font-black text-gray-800 mb-3" style={{ fontSize: fs(fontSizes, "teamName", "1.4rem") }}>昭島美堀メッツ少年野球チームメンバー募集</h1>
-        <div className="inline-block bg-blue-700 text-white font-black px-6 py-2 rounded-full mb-3" style={{ fontSize: fs(fontSizes, "title", "1.7rem") }}>
-          体験会のお知らせ
+        <div style={{ display: "inline-block", width: "25%" }}>
+          <h1 className="font-black text-gray-800" style={{ fontSize: fs(fontSizes, "title", "1.7rem") }}>昭島みほりメッツ野球体験会</h1>
         </div>
-        <p className="text-gray-500 mt-1" style={{ fontSize: fs(fontSizes, "subtitle", "0.9rem") }}>小学生はぜひ！初心者・女の子も大歓迎！</p>
+        <p className="text-gray-500 mt-2" style={{ fontSize: fs(fontSizes, "subtitle", "0.9rem") }}>小学生はぜひ！初心者・女の子も大歓迎！</p>
       </div>
 
       {data.noReservation === "true" && (
