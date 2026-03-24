@@ -24,7 +24,7 @@ function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, alignment
           体験会のお知らせ
         </div>
         <h1 className="font-black text-gray-800 mt-2" style={{ fontSize: fs(fontSizes, "teamName", "1.4rem") }}>昭島美堀メッツ 少年野球チーム</h1>
-        <p className="text-gray-500 mt-1" style={{ fontSize: fs(fontSizes, "subtitle", "0.9rem") }}>小学生・年長さん・初心者・女の子も大歓迎！</p>
+        <p className="text-gray-500 mt-1" style={{ fontSize: fs(fontSizes, "subtitle", "0.9rem") }}>小学生はぜひ！初心者・女の子も大歓迎！</p>
       </div>
 
       {data.noReservation === "true" && (
