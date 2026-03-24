@@ -2,6 +2,7 @@
 
 import { useState, useEffect, ReactNode } from "react";
 import Link from "next/link";
+import DateTimeRangePicker from "@/components/DateTimeRangePicker";
 
 export type FlyerData = Record<string, string>;
 export type FontSizes = Record<string, string>;
@@ -38,6 +39,7 @@ type Field = {
   multiline?: boolean;
   defaultValue?: string;
   checkbox?: boolean;
+  datetimerange?: boolean;
 };
 
 type Props = {
@@ -186,7 +188,15 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
           {fields.map(field => (
             <div key={field.key}>
               <label className="text-sm font-bold text-gray-600 block mb-1">{field.label}</label>
-              {field.checkbox ? (
+              {field.datetimerange ? (
+                <>
+                  <DateTimeRangePicker
+                    value={data[field.key] || ""}
+                    onChange={v => setData({ ...data, [field.key]: v })}
+                  />
+                  <SizeSelector value={getSize(field.key)} onChange={v => setSize(field.key, v)} />
+                </>
+              ) : field.checkbox ? (
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"

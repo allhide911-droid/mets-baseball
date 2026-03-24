@@ -6,7 +6,7 @@ import { QRCodeSVG } from "qrcode.react";
 const APPLY_URL = "https://mets-baseball.vercel.app/apply";
 
 const fields = [
-  { key: "date", label: "日時 *", placeholder: "例：2026年4月6日（日）9:00〜12:00" },
+  { key: "date", label: "日時 *", placeholder: "", datetimerange: true },
   { key: "location", label: "場所 *", placeholder: "例：昭島市美堀町グラウンド" },
   { key: "items", label: "用意するもの", placeholder: "例：動きやすい服装・運動靴・水筒", defaultValue: "動きやすい服装・運動靴・水筒" },
   { key: "notes", label: "備考", placeholder: "例：雨天中止の場合は前日にご連絡します", multiline: true },
