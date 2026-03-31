@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import MultiDatePicker from "@/components/MultiDatePicker";
+import teamConfig from "@/lib/team-config";
 
-const grades = ["年長", "小学1年", "小学2年", "小学3年", "小学4年", "小学5年", "小学6年"];
+const grades = ["小学1年", "小学2年", "小学3年", "小学4年", "小学5年", "小学6年"];
 
 export default function ApplyPage() {
   const router = useRouter();
@@ -48,10 +49,6 @@ export default function ApplyPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (form.trialDate === "その他" && customDates.length === 0) {
-      setError("希望日をカレンダーから選択してください");
-      return;
-    }
     setIsSubmitting(true);
     setError("");
 
@@ -61,9 +58,7 @@ export default function ApplyPage() {
       return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日（${DAYS[d.getDay()]}）`;
     };
     const trialDateValue = form.trialDate === "その他"
-      ? customDates.length > 0
-        ? customDates.map(toJaLabel).join("・")
-        : form.trialDateCustom
+      ? "スタッフとのやり取りで日程調整"
       : form.trialDate;
 
     // クライアント側でIDを生成してから保存
@@ -77,7 +72,7 @@ export default function ApplyPage() {
         child_grade: form.childGrade,
         parent_name: form.parentName,
         trial_date: trialDateValue,
-        message: form.message,
+        message: form.message || null,
         status: "未確認",
       });
 
@@ -87,16 +82,53 @@ export default function ApplyPage() {
       return;
     }
 
-    localStorage.setItem("mets_chat_id", newId);
+    // 通知メール送信（失敗しても申込は完了）
+    fetch("/api/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        childName: form.childName,
+        childGrade: form.childGrade,
+        parentName: form.parentName,
+        trialDate: trialDateValue,
+        message: form.message,
+      }),
+    }).catch(() => {});
+
+    // 申込内容を最初のチャットメッセージとして登録
+    const initialMessage = form.message
+      ? `【申込メッセージ】${form.message}`
+      : `【体験申込】${form.childName}（${form.childGrade}）が申し込みました。`;
+    await supabase.from("messages").insert({
+      applicant_id: newId,
+      sender: "applicant",
+      content: initialMessage,
+    });
+
+    // 自動返信メッセージを送信
+    await supabase.from("messages").insert({
+      applicant_id: newId,
+      sender: "admin",
+      content: "申込ありがとうございます。順次応対させて頂きますので、お待ちください。",
+    });
+
+    localStorage.setItem(teamConfig.localStorageKey, newId);
     router.push(`/chat/${newId}`);
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12">
+    <div className="max-w-2xl mx-auto px-4 py-12" style={{ backgroundColor: "white", minHeight: "100vh" }}>
       <h1 className="text-3xl font-bold text-gray-800 mb-2">体験申込</h1>
-      <p className="text-gray-500 mb-8">
+      <p className="text-gray-500 mb-4">
         下記フォームにご記入の上、「申し込む」ボタンを押してください。
       </p>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mb-8 text-sm text-blue-700">
+        📋 右上メニューから<strong>チーム紹介・費用・FAQ・大会実績・イベント・体験会日程</strong>がご覧いただけます。
+      </div>
+      <div className="bg-yellow-50 border border-yellow-300 rounded-lg px-4 py-3 mb-6 text-sm text-yellow-800">
+        ⚾ 体験は1ヶ月を目処に入部可否をお考えください。<br />
+        試合・遠征などと重なると対応できかねるため、体験日はやり取りの上決めさせて頂きます。
+      </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow p-6 flex flex-col gap-5">
         <div>
@@ -110,7 +142,7 @@ export default function ApplyPage() {
             onChange={handleChange}
             required
             placeholder="例：田中 太郎"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
@@ -123,7 +155,7 @@ export default function ApplyPage() {
             value={form.childGrade}
             onChange={handleChange}
             required
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             <option value="">選択してください</option>
             {grades.map((g) => (
@@ -143,32 +175,31 @@ export default function ApplyPage() {
             onChange={handleChange}
             required
             placeholder="例：田中 一郎"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">
-            体験希望日程 <span className="text-red-500">*</span>
+            体験日程 <span className="text-red-500">*</span>
           </label>
           <select
             name="trialDate"
             value={form.trialDate}
             onChange={handleChange}
             required
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             <option value="">選択してください</option>
             {trialDates.map((d) => (
               <option key={d} value={d}>{d}</option>
             ))}
-            <option value="その他">その他（直接入力）</option>
+            <option value="その他">スタッフとのやり取りで日程を決める</option>
           </select>
           {form.trialDate === "その他" && (
-            <MultiDatePicker
-              selectedDates={customDates}
-              onChange={setCustomDates}
-            />
+            <p className="mt-2 text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+              申込後、スタッフとのチャットで体験日程を調整します。
+            </p>
           )}
         </div>
 
@@ -182,7 +213,7 @@ export default function ApplyPage() {
             onChange={handleChange}
             rows={3}
             placeholder="ご質問・ご要望などがあればお書きください"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
           />
         </div>
 

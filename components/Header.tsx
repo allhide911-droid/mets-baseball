@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import teamConfig from "@/lib/team-config";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,7 +11,7 @@ export default function Header() {
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <Link href="/" className="text-base font-bold text-blue-700 whitespace-nowrap shrink-0">
-          昭島美堀メッツ少年野球チームメンバー募集
+          {teamConfig.teamName}メンバー募集
         </Link>
 
         {/* PC用ナビ */}

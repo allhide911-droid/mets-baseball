@@ -1,93 +1,106 @@
 "use client";
 
-import FlyerBase, { FlyerData, FontSizes, Alignments } from "@/components/FlyerBase";
+import FlyerBase, { FlyerData } from "@/components/FlyerBase";
 import { QRCodeSVG } from "qrcode.react";
 
 const APPLY_URL = "https://mets-baseball.vercel.app/apply";
 
 const fields = [
-  { key: "teamName", label: "チーム名", placeholder: "例：昭島美堀メッツ", defaultValue: "昭島美堀メッツ" },
-  { key: "target", label: "対象", placeholder: "例：小学生・年長さん・初心者・女の子大歓迎", defaultValue: "小学生・年長さん・初心者・女の子大歓迎！" },
-  { key: "schedule", label: "活動日時", placeholder: "例：毎週日曜日 9:00〜12:00" },
-  { key: "location", label: "活動場所", placeholder: "例：昭島市美堀町グラウンド" },
-  { key: "fee", label: "月会費など費用", placeholder: "例：月2,000円（ユニフォーム代別途）" },
-  { key: "notes", label: "備考", placeholder: "例：まずは体験から！お気軽にご参加ください。", multiline: true },
+  { key: "photoDate", label: "撮影日", placeholder: "例：2026.02 撮影", defaultValue: "2026.02 撮影" },
+  { key: "showQR", label: "QRコードを表示する", placeholder: "QRコードを表示する", checkbox: true, defaultValue: "true" },
 ];
 
-const fs = (sizes: FontSizes, key: string, def = "1rem") => sizes[key] ?? def;
-const fa = (aligns: Alignments, key: string, def = "left") => aligns[key] ?? def;
-
-function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, alignments: Alignments, imageData: string | null, imageType: string | null) {
+function TemplatePreview(imageData: string | null, photoDate: string, showQR: boolean) {
   return (
-    <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-6">
-      <div className="mb-6" style={{ textAlign: fa(alignments, "title", "center") as "left"|"center"|"right" }}>
-        <div className="inline-block bg-blue-700 text-white font-black px-6 py-2 rounded-full mb-3" style={{ fontSize: fs(fontSizes, "title", "1.7rem") }}>
-          ⚾ メンバー募集中！
+    <div
+      className="flyer-preview flyer-recruit print:shadow-none"
+      style={{
+        fontFamily: "'Meiryo UI', 'Meiryo', sans-serif",
+        border: "2px solid #1e3a8a",
+        background: "white",
+        width: "100%",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* ヘッダー */}
+      <div style={{ padding: "10px 16px 12px", borderBottom: "2px solid #1e3a8a" }}>
+        <div style={{ color: "#4169E1", fontWeight: 900, fontSize: "clamp(4.5rem, 14.5vw, 5.9rem)", fontStyle: "italic", letterSpacing: "0.03em", textAlign: "center", lineHeight: 1.0 }}>
+          昭島美堀　<em style={{ fontStyle: "italic" }}>Mets</em>
         </div>
-        <h1 className="font-black text-gray-800 mt-2" style={{ fontSize: fs(fontSizes, "teamName", "1.4rem"), textAlign: fa(alignments, "teamName", "center") as "left"|"center"|"right" }}>{data.teamName || "昭島美堀メッツ"} 少年野球チーム</h1>
-        <p className="font-black text-red-500 mt-2" style={{ fontSize: fs(fontSizes, "target", "1.1rem"), textAlign: fa(alignments, "target", "center") as "left"|"center"|"right" }}>{data.target}</p>
+        <div style={{ fontWeight: 900, fontSize: "clamp(3.0rem, 10.5vw, 4.2rem)", letterSpacing: "0.15em", color: "#111", lineHeight: 1.0, textAlign: "center", whiteSpace: "nowrap" }}>
+          野球しようぜ！
+        </div>
       </div>
 
-      {imageData && (
-        <div className="mb-6 flex justify-center">
-          {imageType?.startsWith("image/") ? (
-            <img src={imageData} alt="チラシ画像" className="max-h-48 rounded-xl object-contain border" />
+      {/* 集合写真 */}
+      <div style={{ position: "relative" }}>
+        <div style={{ background: "linear-gradient(to bottom, #4169E1 0%, rgba(65,105,225,0.12) 50%, #4169E1 100%)", minHeight: "160px", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.35)" }}>
+          {imageData ? (
+            <img src={imageData} alt="集合写真" style={{ width: "80%", objectFit: "contain", display: "block", margin: "0 auto", filter: "brightness(1.08)" }} />
           ) : (
-            <embed src={imageData} type="application/pdf" className="w-full h-64 rounded-xl border" />
+            <span style={{ color: "#9ca3af", fontSize: "0.85rem", padding: "40px" }}>集合写真をアップロードしてください</span>
           )}
         </div>
-      )}
-
-      <div className="bg-blue-50 rounded-xl p-6 mb-6">
-        <table className="w-full">
-          <tbody>
-            {data.schedule && (
-              <tr className="border-b border-blue-100">
-                <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap w-28 text-sm">📅 活動日時</td>
-                <td className="py-3 font-bold text-gray-800" style={{ fontSize: fs(fontSizes, "schedule"), textAlign: fa(alignments, "schedule") as "left"|"center"|"right" }}>{data.schedule}</td>
-              </tr>
-            )}
-            {data.location && (
-              <tr className="border-b border-blue-100">
-                <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap text-sm">📍 活動場所</td>
-                <td className="py-3 font-bold text-gray-800" style={{ fontSize: fs(fontSizes, "location"), textAlign: fa(alignments, "location") as "left"|"center"|"right" }}>{data.location}</td>
-              </tr>
-            )}
-            {data.fee && (
-              <tr className={data.notes ? "border-b border-blue-100" : ""}>
-                <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap text-sm">💴 費用</td>
-                <td className="py-3 text-gray-700" style={{ fontSize: fs(fontSizes, "fee"), textAlign: fa(alignments, "fee") as "left"|"center"|"right" }}>{data.fee}</td>
-              </tr>
-            )}
-            {data.notes && (
-              <tr>
-                <td className="py-3 pr-4 font-black text-blue-800 whitespace-nowrap text-sm">📝 備考</td>
-                <td className="py-3 text-gray-700" style={{ fontSize: fs(fontSizes, "notes"), textAlign: fa(alignments, "notes") as "left"|"center"|"right" }}>{data.notes}</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-6 items-center justify-center bg-gray-50 rounded-xl p-6">
-        <div className="text-center">
-          <QRCodeSVG value={APPLY_URL} size={80} />
-          <p className="text-xs font-bold text-gray-600 mt-2">体験申込はこちら</p>
-          <p className="text-xs text-gray-400">{APPLY_URL}</p>
-        </div>
-        <div className="text-sm text-gray-600 text-center sm:text-left">
-          <p className="font-black text-gray-800 text-base mb-2">📱 まずは体験から！</p>
-          <p>・QRコードから体験申込ができます</p>
-          <p>・スタッフとチャットで気軽に質問OK</p>
-          <p>・申込後もいつでもやりとり可能</p>
+        <div style={{ textAlign: "right", fontSize: "0.68rem", color: "#374151", paddingRight: "4px", marginTop: "2px" }}>
+          {photoDate}
         </div>
       </div>
 
-      <div className="text-center mt-6 text-xs text-gray-400">
-        昭島美堀メッツ少年野球チーム｜{APPLY_URL}
+      {/* 本文 2列 */}
+      <div style={{ display: "flex", gap: "10px", padding: "10px 14px 6px", fontSize: "1.14rem", lineHeight: 1.65, overflow: "hidden" }}>
+        {/* 左カラム */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ fontSize: "1.3rem" }}><strong>[練習日]</strong><span style={{ fontSize: "1.05rem" }}>（試合などで変動あります）</span></p>
+          <p style={{ fontSize: "1.3rem" }}>土　　　　9:00〜13:00　@ エコパーク</p>
+          <p style={{ fontSize: "1.3rem", whiteSpace: "nowrap" }}>日・祝日　9:00〜17:00　@ 拝島第二小学校　くじら運動公園</p>
+          <p style={{ marginTop: "6px" }}><strong>[部費]</strong></p>
+          <p>￥1,000　入会時のみ</p>
+          <p>￥3,000　/ 毎月（合宿積立金込）</p>
+          <p style={{ marginTop: "6px" }}><strong>[用具]</strong></p>
+          <p>チームにバットなど中古品あります</p>
+          <p>貸出しなどお気軽にご相談ください</p>
+          <p style={{ marginTop: "6px" }}><strong>[イベント]</strong></p>
+          <p>1月：初詣・新年会</p>
+          <p>8月：合宿（川遊びなど）</p>
+          <p>12月：納会（出し物）など</p>
+        </div>
+
+        {/* 右ボックス */}
+        <div style={{ width: "52%", flexShrink: 0, alignSelf: "flex-start", marginTop: "calc(1.3rem * 1.65 * 4 + 6px)", border: "2px solid #4169E1", borderRadius: "6px", padding: "8px 10px", fontSize: "1.1rem", lineHeight: 1.65, boxShadow: "0 0 14px rgba(65,105,225,0.45)" }}>
+          <p style={{ fontWeight: "bold", color: "#1e3a8a", marginBottom: "5px" }}>小学1〜6年生までの軟式野球チーム</p>
+          <p>初心者・女子も大歓迎！　指導して頂ける保護者も大歓迎！</p>
+          <div style={{ borderTop: "1px solid #c7d2fe", marginTop: "8px", paddingTop: "6px", fontSize: "1.0rem", lineHeight: 1.65 }}>
+            <p><strong>[保護者の方へ]</strong></p>
+            <p>メッツは監督・コーチ・選手・保護者の距離がとても近く、親子で野球を楽しめます♫</p>
+            <p>保護者の当番は、選手の見守りがメインで、1カ月〜2カ月に1回（半日）程度です！お気軽に親子で見学・体験にきてください</p>
+          </div>
+        </div>
+      </div>
+
+      {/* フッター */}
+      <div style={{ background: "#4169E1", color: "white", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
+        <div style={{ fontWeight: "bold", fontSize: "1.76rem", lineHeight: 1.5, flexShrink: 0 }}>
+          <p>見学・体験・入部</p>
+          <p>随時受付中</p>
+        </div>
+        {showQR && (
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{ fontSize: "1.64rem", fontWeight: "bold", textAlign: "right", lineHeight: 1.5 }}>
+              <p>QRコードから申込・問合せ・</p>
+              <p>相談のチャットもできます</p>
+            </div>
+            <div style={{ background: "white", padding: "5px", borderRadius: "4px", flexShrink: 0 }}>
+              <QRCodeSVG value={APPLY_URL} size={110} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
+}
+
+function Preview(data: FlyerData, _font: string, _fontSizes: unknown, _alignments: unknown, imageData: string | null) {
+  return TemplatePreview(imageData, data.photoDate || "2026.02 撮影", data.showQR !== "false");
 }
 
 export default function RecruitFlyerPage() {

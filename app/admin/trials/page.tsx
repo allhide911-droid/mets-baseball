@@ -77,6 +77,17 @@ export default function AdminTrialsPage() {
     await fetchTrials();
   };
 
+  const handleDuplicate = (t: Trial) => {
+    setForm({
+      date: t.date,
+      start_time: t.start_time,
+      location: t.location,
+      items_to_bring: t.items_to_bring || "",
+      notes: t.notes || "",
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const formatDate = (d: string) => {
     const date = new Date(d);
     const days = ["日", "月", "火", "水", "木", "金", "土"];
@@ -153,10 +164,16 @@ export default function AdminTrialsPage() {
                 {t.items_to_bring && <p className="text-sm text-gray-500">🎒 {t.items_to_bring}</p>}
                 {t.notes && <p className="text-sm text-gray-500">📝 {t.notes}</p>}
               </div>
-              <button onClick={() => handleDelete(t.id)}
-                className="text-red-400 hover:text-red-600 text-sm font-bold whitespace-nowrap">
-                削除
-              </button>
+              <div className="flex flex-col gap-2">
+                <button onClick={() => handleDuplicate(t)}
+                  className="text-green-600 hover:text-green-800 text-sm font-bold whitespace-nowrap">
+                  複写
+                </button>
+                <button onClick={() => handleDelete(t.id)}
+                  className="text-red-400 hover:text-red-600 text-sm font-bold whitespace-nowrap">
+                  削除
+                </button>
+              </div>
             </div>
           ))}
         </div>

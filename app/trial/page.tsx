@@ -50,7 +50,7 @@ export default function TrialPage() {
       ) : trials.length === 0 ? (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
           <p className="text-blue-700 font-bold text-lg mb-1">日程調整中</p>
-          <p className="text-gray-600 text-sm">近日公開予定です。体験希望日をフォームからお知らせください。</p>
+          <p className="text-gray-600 text-sm">近日公開予定です。体験日をフォームからお知らせください。</p>
           <Link href="/apply" className="inline-block mt-4 bg-blue-600 text-white font-bold px-6 py-2 rounded-full hover:bg-blue-700 transition text-sm">
             体験を申し込む
           </Link>

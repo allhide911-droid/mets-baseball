@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import teamConfig from "@/lib/team-config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "昭島美堀メッツ野球チーム 部員募集",
-  description: "昭島美堀メッツ野球チームの体験入団申込サイト",
+  title: `${teamConfig.teamShortName} ${teamConfig.sport}チーム 部員募集`,
+  description: `${teamConfig.teamShortName}${teamConfig.sport}チームの体験入団申込サイト`,
 };
 
 export default function RootLayout({

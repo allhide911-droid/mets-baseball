@@ -13,6 +13,8 @@ const SIZE_OPTIONS = [
   { label: "標準", value: "1rem" },
   { label: "大", value: "1.3rem" },
   { label: "特大", value: "1.7rem" },
+  { label: "超特大", value: "2.5rem" },
+  { label: "最大", value: "3.5rem" },
 ];
 
 type SavedFlyer = {
@@ -28,6 +30,7 @@ type SavedFlyer = {
 };
 
 export const FONTS = [
+  { label: "Meiryo UI", value: "'Meiryo UI', 'Meiryo', sans-serif" },
   { label: "ゴシック体", value: "'Noto Sans JP', sans-serif" },
   { label: "明朝体", value: "'Noto Serif JP', serif" },
   { label: "丸ゴシック", value: "'M PLUS Rounded 1c', sans-serif" },
@@ -49,6 +52,7 @@ type Props = {
   title: string;
   fields: Field[];
   renderPreview: (data: FlyerData, font: string, fontSizes: FontSizes, alignments: Alignments, imageData: string | null, imageType: string | null) => ReactNode;
+  onReflect?: (data: FlyerData) => Promise<{ ok: boolean; message: string }>;
 };
 
 function AlignSelector({ value, onChange }: { value: string; onChange: (v: string) => void }) {
@@ -91,16 +95,19 @@ function SizeSelector({ value, onChange }: { value: string; onChange: (v: string
   );
 }
 
-export default function FlyerBase({ storageKey, title, fields, renderPreview }: Props) {
+export default function FlyerBase({ storageKey, title, fields, renderPreview, onReflect }: Props) {
   const [data, setData] = useState<FlyerData>({});
-  const [font, setFont] = useState(FONTS[0].value);
-  const [fontSizes, setFontSizes] = useState<FontSizes>({ title: "1.7rem" });
+  const [font, setFont] = useState("'Meiryo UI', 'Meiryo', sans-serif");
+  const [fontSizes, setFontSizes] = useState<FontSizes>({ title: "3.5rem" });
   const [alignments, setAlignments] = useState<Alignments>({ title: "center" });
   const [imageData, setImageData] = useState<string | null>(null);
   const [imageType, setImageType] = useState<string | null>(null);
   const [savedFlyers, setSavedFlyers] = useState<SavedFlyer[]>([]);
   const [saveName, setSaveName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [reflectMsg, setReflectMsg] = useState<{ ok: boolean; message: string } | null>(null);
+  const [reflecting, setReflecting] = useState(false);
 
   const setSize = (key: string, value: string) => setFontSizes(prev => ({ ...prev, [key]: value }));
   const getSize = (key: string, def = "1rem") => fontSizes[key] ?? def;
@@ -118,6 +125,11 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 7 * 1024 * 1024) {
+      alert("ファイルサイズが大きすぎます。7MB以下の画像・PDFを選択してください。");
+      e.target.value = "";
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (ev) => { setImageData(ev.target?.result as string); setImageType(file.type); };
     reader.readAsDataURL(file);
@@ -139,10 +151,16 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
     const updated = editingId
       ? savedFlyers.map(f => f.id === editingId ? flyer : f)
       : [...savedFlyers, flyer];
-    setSavedFlyers(updated);
-    localStorage.setItem(storageKey, JSON.stringify(updated));
-    setEditingId(flyer.id);
-    setSaveName(name);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(updated));
+      setSavedFlyers(updated);
+      setEditingId(flyer.id);
+      setSaveName(name);
+      setSaveMsg({ ok: true, text: "✅ 保存しました！" });
+    } catch {
+      setSaveMsg({ ok: false, text: "❌ 保存できませんでした。画像が大きすぎる可能性があります。" });
+    }
+    setTimeout(() => setSaveMsg(null), 3000);
   };
 
   const handleLoad = (flyer: SavedFlyer) => {
@@ -163,12 +181,25 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
     if (editingId === id) { setEditingId(null); setSaveName(""); }
   };
 
+  const handleDuplicate = (flyer: SavedFlyer) => {
+    const copy: SavedFlyer = {
+      ...flyer,
+      id: Date.now().toString(),
+      name: flyer.name + "のコピー",
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [...savedFlyers, copy];
+    setSavedFlyers(updated);
+    localStorage.setItem(storageKey, JSON.stringify(updated));
+    handleLoad(copy);
+  };
+
   const handleNew = () => {
     const initial: FlyerData = {};
     fields.forEach(f => { initial[f.key] = f.defaultValue ?? ""; });
     setData(initial);
-    setFont(FONTS[0].value);
-    setFontSizes({ title: "1.7rem" });
+    setFont("'Meiryo UI', 'Meiryo', sans-serif");
+    setFontSizes({ title: "3.5rem" });
     setAlignments({ title: "center" });
     setImageData(null);
     setImageType(null);
@@ -196,6 +227,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
                 <span className="text-sm font-medium text-gray-700">{f.name}</span>
                 <div className="flex gap-3">
                   <button onClick={() => handleLoad(f)} className="text-xs text-blue-600 hover:underline">編集</button>
+                  <button onClick={() => handleDuplicate(f)} className="text-xs text-green-600 hover:underline">複写</button>
                   <button onClick={() => handleDelete(f.id)} className="text-xs text-red-500 hover:underline">削除</button>
                 </div>
               </div>
@@ -209,10 +241,9 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
         <h2 className="text-lg font-bold text-gray-700 mb-4">チラシ内容を入力</h2>
         <div className="grid grid-cols-1 gap-5">
 
-          {/* タイトル文字サイズ・整列 */}
+          {/* タイトル整列 */}
           <div className="bg-gray-50 rounded-lg px-4 py-3">
-            <label className="text-sm font-bold text-gray-600 block mb-1">タイトルの文字サイズ・位置</label>
-            <SizeSelector value={getSize("title", "1.7rem")} onChange={v => setSize("title", v)} />
+            <label className="text-sm font-bold text-gray-600 block mb-1">タイトルの位置</label>
             <AlignSelector value={getAlign("title", "center")} onChange={v => setAlign("title", v)} />
           </div>
 
@@ -226,10 +257,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
                     value={data[field.key] || ""}
                     onChange={v => setData({ ...data, [field.key]: v })}
                   />
-                  <div className="flex gap-4 mt-1">
-                    <SizeSelector value={getSize(field.key)} onChange={v => setSize(field.key, v)} />
-                    <AlignSelector value={getAlign(field.key)} onChange={v => setAlign(field.key, v)} />
-                  </div>
+                  <AlignSelector value={getAlign(field.key)} onChange={v => setAlign(field.key, v)} />
                 </>
               ) : field.checkbox ? (
                 <div className="flex items-center gap-2">
@@ -251,10 +279,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
                     rows={2}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
-                  <div className="flex gap-4 mt-1">
-                    <SizeSelector value={getSize(field.key)} onChange={v => setSize(field.key, v)} />
-                    <AlignSelector value={getAlign(field.key)} onChange={v => setAlign(field.key, v)} />
-                  </div>
+                  <AlignSelector value={getAlign(field.key)} onChange={v => setAlign(field.key, v)} />
                 </>
               ) : (
                 <>
@@ -265,10 +290,7 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
                     placeholder={field.placeholder}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
-                  <div className="flex gap-4 mt-1">
-                    <SizeSelector value={getSize(field.key)} onChange={v => setSize(field.key, v)} />
-                    <AlignSelector value={getAlign(field.key)} onChange={v => setAlign(field.key, v)} />
-                  </div>
+                  <AlignSelector value={getAlign(field.key)} onChange={v => setAlign(field.key, v)} />
                 </>
               )}
             </div>
@@ -325,9 +347,33 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
           <button onClick={handleSave} className="bg-green-600 text-white font-bold px-6 py-2 rounded-full hover:bg-green-700 transition text-sm">
             💾 保存する
           </button>
+          {saveMsg && (
+            <span className={`text-sm font-bold ${saveMsg.ok ? "text-green-600" : "text-red-500"}`}>{saveMsg.text}</span>
+          )}
           <button onClick={() => window.print()} className="bg-blue-600 text-white font-bold px-6 py-2 rounded-full hover:bg-blue-700 transition text-sm">
             🖨️ 印刷する
           </button>
+          {onReflect && (
+            <>
+              <button
+                onClick={async () => {
+                  setReflecting(true);
+                  setReflectMsg(null);
+                  const result = await onReflect(data);
+                  setReflectMsg(result);
+                  setReflecting(false);
+                  setTimeout(() => setReflectMsg(null), 4000);
+                }}
+                disabled={reflecting}
+                className="bg-orange-500 text-white font-bold px-6 py-2 rounded-full hover:bg-orange-600 transition text-sm disabled:opacity-50"
+              >
+                📅 {reflecting ? "反映中..." : "スケジュールに反映する"}
+              </button>
+              {reflectMsg && (
+                <span className={`text-sm font-bold ${reflectMsg.ok ? "text-green-600" : "text-red-500"}`}>{reflectMsg.message}</span>
+              )}
+            </>
+          )}
         </div>
       </div>
 
@@ -342,9 +388,12 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview }: 
           .print\\:hidden { display: none !important; }
           header { display: none !important; }
           nav { display: none !important; }
-          @page { size: A4 portrait; margin: 10mm; }
+          footer { display: none !important; }
+          @page { size: A4 portrait; margin: 5mm; }
           body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          .flyer-preview { width: 190mm; min-height: 277mm; box-sizing: border-box; page-break-inside: avoid; }
+          .flyer-preview { width: 190mm; box-sizing: border-box; page-break-after: avoid; overflow: hidden; }
+          .flyer-preview ~ * { display: none !important; }
+          .flyer-recruit { zoom: 0.93; }
         }
       `}</style>
     </div>

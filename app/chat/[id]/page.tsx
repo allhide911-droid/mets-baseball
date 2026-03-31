@@ -62,31 +62,58 @@ export default function ChatPage() {
   const handleSend = async () => {
     if (!input.trim() || sending) return;
     setSending(true);
-    await supabase.from("messages").insert({
-      applicant_id: id,
-      sender: "applicant",
-      content: input.trim(),
-    });
-    setInput("");
-    setSending(false);
+    try {
+      const { error } = await supabase.from("messages").insert({
+        applicant_id: id,
+        sender: "applicant",
+        content: input.trim(),
+      });
+      if (!error) {
+        setInput("");
+        fetchMessages();
+      }
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleUndo = async () => {
+    const { data } = await supabase
+      .from("messages")
+      .select("id")
+      .eq("applicant_id", id)
+      .eq("sender", "applicant")
+      .order("created_at", { ascending: false })
+      .limit(1);
+    if (!data || data.length === 0) return;
+    if (!confirm("最後に送ったメッセージを削除しますか？")) return;
+    await supabase.from("messages").delete().eq("id", data[0].id);
     fetchMessages();
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-2xl mx-auto px-4 py-8" style={{ backgroundColor: "white", minHeight: "100vh" }}>
       <Link href="/" className="text-blue-600 text-sm hover:underline">
         ← トップに戻る
       </Link>
 
       <div className="mt-4 mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className="text-2xl font-bold" style={{ color: "#4169E1" }}>
           {applicant ? `${applicant.child_name}さんの申込チャット` : "チャット"}
         </h1>
-        <p className="text-gray-500 text-sm mt-1">
+        <p className="text-sm mt-1" style={{ color: "#4169E1" }}>
           昭島美堀メッツのスタッフに質問・連絡ができます。
         </p>
       </div>
 
+
+      {/* 体験日程に関するご案内 */}
+      <div className="bg-yellow-50 border border-yellow-300 rounded-xl px-4 py-3 mb-4">
+        <p className="text-sm text-yellow-800">
+          ⚾ 体験は1ヶ月を目処に入部可否をお考えください。<br />
+          試合・遠征などと重なると対応できかねるため、体験日はやり取りの上決めさせて頂きます。
+        </p>
+      </div>
 
       {/* 再開方法の案内 */}
       <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 mb-4 flex items-start gap-3">
@@ -102,15 +129,15 @@ export default function ChatPage() {
       {/* 申込内容の確認 */}
       {applicant && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-4">
-          <p className="text-xs font-bold text-blue-700 mb-2">📄 申込内容</p>
-          <div className="flex flex-col gap-1 text-sm text-gray-700">
+          <p className="text-xs font-bold mb-2" style={{ color: "#4169E1" }}>📄 申込内容</p>
+          <div className="flex flex-col gap-1 text-sm" style={{ color: "#4169E1" }}>
             <div className="flex gap-2">
-              <span className="text-gray-500 shrink-0">体験希望日程</span>
+              <span className="shrink-0" style={{ color: "#4169E1" }}>体験日程</span>
               <span className="font-medium">{applicant.trial_date || "未定"}</span>
             </div>
             {applicant.message && (
               <div className="flex gap-2">
-                <span className="text-gray-500 shrink-0">備考</span>
+                <span className="shrink-0" style={{ color: "#4169E1" }}>備考</span>
                 <span>{applicant.message}</span>
               </div>
             )}
@@ -121,7 +148,7 @@ export default function ChatPage() {
       {/* チャット */}
       <div className="bg-gray-50 rounded-xl border p-4 h-80 overflow-y-auto flex flex-col gap-3 mb-4">
         {messages.length === 0 && (
-          <div className="text-center text-gray-400 text-sm my-auto">
+          <div className="text-center text-sm my-auto" style={{ color: "#4169E1" }}>
             メッセージを送ってください。スタッフが確認次第返信します。
           </div>
         )}
@@ -138,7 +165,7 @@ export default function ChatPage() {
               }`}
             >
               {msg.sender === "admin" && (
-                <p className="text-xs text-gray-500 mb-1 font-bold">スタッフ</p>
+                <p className="text-xs mb-1 font-bold" style={{ color: "#4169E1" }}>スタッフ</p>
               )}
               <p>{msg.content}</p>
               <p
@@ -166,7 +193,8 @@ export default function ChatPage() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="メッセージを入力..."
-          className="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="flex-1 border border-gray-300 rounded-full px-4 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          style={{ backgroundColor: "white", WebkitTextFillColor: "#111827", WebkitBoxShadow: "0 0 0px 1000px white inset" }}
         />
         <button
           onClick={handleSend}
@@ -174,6 +202,15 @@ export default function ChatPage() {
           className="bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition disabled:opacity-50"
         >
           送信
+        </button>
+      </div>
+      <div className="flex justify-end mt-2">
+        <button
+          onClick={handleUndo}
+          className="text-xs font-bold px-4 py-2 rounded-full border border-gray-300 hover:bg-gray-100 transition"
+          style={{ color: "#4169E1" }}
+        >
+          ↩ 1つ前に戻す
         </button>
       </div>
     </div>

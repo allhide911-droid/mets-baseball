@@ -60,11 +60,17 @@ export default function AdminChatPage() {
   useEffect(() => {
     fetchMessages();
     const interval = setInterval(fetchMessages, 5000);
+    // チャットを開いたら既読記録
+    localStorage.setItem(`mets_read_${id}`, new Date().toISOString());
     return () => clearInterval(interval);
   }, [id]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    // メッセージ取得のたびに既読更新
+    if (messages.length > 0) {
+      localStorage.setItem(`mets_read_${id}`, new Date().toISOString());
+    }
   }, [messages]);
 
   const handleSend = async () => {
@@ -80,19 +86,27 @@ export default function AdminChatPage() {
     fetchMessages();
   };
 
+  const handleUndo = async () => {
+    const lastAdminMsg = [...messages].reverse().find(m => m.sender === "admin");
+    if (!lastAdminMsg) return;
+    if (!confirm("最後に送ったメッセージを削除しますか？")) return;
+    await supabase.from("messages").delete().eq("id", lastAdminMsg.id);
+    fetchMessages();
+  };
+
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-2xl mx-auto px-4 py-8" style={{ backgroundColor: "white", minHeight: "100vh" }}>
       <Link href="/admin" className="text-blue-600 text-sm hover:underline">
         ← 申込者一覧に戻る
       </Link>
 
       {applicant && (
         <div className="mt-4 mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="text-2xl font-bold" style={{ color: "#000000" }}>
             {applicant.child_name}さん（{applicant.child_grade}）
           </h1>
-          <p className="text-gray-500 text-sm">
-            保護者：{applicant.parent_name}　体験希望日：{applicant.trial_date || "未定"}
+          <p className="text-sm font-medium" style={{ color: "#222222" }}>
+            保護者：{applicant.parent_name}　体験日：{applicant.trial_date || "未定"}
           </p>
           {applicant.message && (
             <div className="mt-3 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3">
@@ -122,7 +136,7 @@ export default function AdminChatPage() {
               }`}
             >
               {msg.sender === "applicant" && (
-                <p className="text-xs text-gray-500 mb-1 font-bold">
+                <p className="text-xs text-gray-800 mb-1 font-bold">
                   {applicant?.child_name}さん
                 </p>
               )}
@@ -145,14 +159,15 @@ export default function AdminChatPage() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 mb-2">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="返信を入力..."
-          className="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="flex-1 border border-gray-300 rounded-full px-4 py-3 text-base text-gray-900 font-medium bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+          style={{ WebkitTextFillColor: "#111827", WebkitBoxShadow: "0 0 0px 1000px white inset" }}
         />
         <button
           onClick={handleSend}
@@ -160,6 +175,15 @@ export default function AdminChatPage() {
           className="bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition disabled:opacity-50"
         >
           返信
+        </button>
+      </div>
+      <div className="flex justify-end">
+        <button
+          onClick={handleUndo}
+          disabled={!messages.some(m => m.sender === "admin")}
+          className="text-xs text-red-400 hover:text-red-600 hover:underline disabled:opacity-30"
+        >
+          ↩ 1つ前に戻す
         </button>
       </div>
     </div>
