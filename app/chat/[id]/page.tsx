@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
@@ -22,6 +22,7 @@ type Applicant = {
 
 export default function ChatPage() {
   const { id } = useParams() as { id: string };
+  const router = useRouter();
   const [applicant, setApplicant] = useState<Applicant | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -35,12 +36,26 @@ export default function ChatPage() {
         .select("id, child_name, parent_name, trial_date, message")
         .eq("id", id)
         .single();
-      if (data) setApplicant(data as Applicant);
+      if (data) {
+        setApplicant(data as Applicant);
+      } else {
+        router.replace("/");
+      }
     };
     fetchApplicant();
   }, [id]);
 
   const fetchMessages = async () => {
+    // 申込者が削除されていないか確認
+    const { data: applicantCheck } = await supabase
+      .from("applicants")
+      .select("id")
+      .eq("id", id)
+      .single();
+    if (!applicantCheck) {
+      router.replace("/");
+      return;
+    }
     const { data } = await supabase
       .from("messages")
       .select("*")

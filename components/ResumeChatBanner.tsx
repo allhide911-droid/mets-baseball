@@ -2,13 +2,27 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import teamConfig from "@/lib/team-config";
 
 export default function ResumeChatBanner() {
   const [chatId, setChatId] = useState<string | null>(null);
 
   useEffect(() => {
-    const id = localStorage.getItem("mets_chat_id");
-    if (id) setChatId(id);
+    const id = localStorage.getItem(teamConfig.localStorageKey);
+    if (!id) return;
+    supabase
+      .from("applicants")
+      .select("id")
+      .eq("id", id)
+      .single()
+      .then(({ data }) => {
+        if (data) {
+          setChatId(id);
+        } else {
+          localStorage.removeItem(teamConfig.localStorageKey);
+        }
+      });
   }, []);
 
   if (!chatId) return null;

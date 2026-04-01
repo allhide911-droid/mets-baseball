@@ -94,11 +94,29 @@ export default function AdminChatPage() {
     fetchMessages();
   };
 
+  const handleDelete = async () => {
+    if (!applicant) return;
+    if (!confirm(`「${applicant.child_name}」の申込を削除してもよいですか？`)) return;
+    await supabase.from("messages").delete().eq("applicant_id", id);
+    await supabase.from("applicants").delete().eq("id", id);
+    router.push("/admin");
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8" style={{ backgroundColor: "white", minHeight: "100vh" }}>
-      <Link href="/admin" className="text-blue-600 text-sm hover:underline">
-        ← 申込者一覧に戻る
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link href="/admin" className="text-blue-600 text-sm hover:underline">
+          ← 申込者一覧に戻る
+        </Link>
+        {applicant && (
+          <button
+            onClick={handleDelete}
+            className="text-xs text-red-500 hover:text-red-700 hover:underline"
+          >
+            この申込を削除
+          </button>
+        )}
+      </div>
 
       {applicant && (
         <div className="mt-4 mb-6">

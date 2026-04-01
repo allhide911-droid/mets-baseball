@@ -47,6 +47,24 @@ export default function ApplyPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  // 既存チャットがあればリダイレクト
+  useEffect(() => {
+    const existingId = localStorage.getItem(teamConfig.localStorageKey);
+    if (!existingId) return;
+    supabase
+      .from("applicants")
+      .select("id")
+      .eq("id", existingId)
+      .single()
+      .then(({ data }) => {
+        if (data) {
+          router.replace(`/chat/${existingId}`);
+        } else {
+          localStorage.removeItem(teamConfig.localStorageKey);
+        }
+      });
+  }, [router]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);

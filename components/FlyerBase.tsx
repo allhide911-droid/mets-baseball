@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, useRef, ReactNode } from "react";
 import Link from "next/link";
 import DateTimeRangePicker from "@/components/DateTimeRangePicker";
 
@@ -108,6 +108,8 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview, on
   const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [reflectMsg, setReflectMsg] = useState<{ ok: boolean; message: string } | null>(null);
   const [reflecting, setReflecting] = useState(false);
+  const [deletedFlyer, setDeletedFlyer] = useState<{ flyer: SavedFlyer; index: number } | null>(null);
+  const undoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const setSize = (key: string, value: string) => setFontSizes(prev => ({ ...prev, [key]: value }));
   const getSize = (key: string, def = "1rem") => fontSizes[key] ?? def;
@@ -175,10 +177,25 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview, on
   };
 
   const handleDelete = (id: string) => {
+    const index = savedFlyers.findIndex(f => f.id === id);
+    const flyer = savedFlyers[index];
     const updated = savedFlyers.filter(f => f.id !== id);
     setSavedFlyers(updated);
     localStorage.setItem(storageKey, JSON.stringify(updated));
     if (editingId === id) { setEditingId(null); setSaveName(""); }
+    setDeletedFlyer({ flyer, index });
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    undoTimerRef.current = setTimeout(() => setDeletedFlyer(null), 60000);
+  };
+
+  const handleUndo = () => {
+    if (!deletedFlyer) return;
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    const restored = [...savedFlyers];
+    restored.splice(deletedFlyer.index, 0, deletedFlyer.flyer);
+    setSavedFlyers(restored);
+    localStorage.setItem(storageKey, JSON.stringify(restored));
+    setDeletedFlyer(null);
   };
 
   const handleDuplicate = (flyer: SavedFlyer) => {
@@ -233,6 +250,19 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview, on
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* 削除取り消しバナー */}
+      {deletedFlyer && (
+        <div className="flex items-center justify-between bg-gray-800 text-white rounded-xl px-4 py-3 mb-4 print:hidden">
+          <span className="text-sm">「{deletedFlyer.flyer.name}」を削除しました</span>
+          <button
+            onClick={handleUndo}
+            className="text-sm font-bold text-yellow-300 hover:text-yellow-100 underline ml-4"
+          >
+            元に戻す
+          </button>
         </div>
       )}
 
