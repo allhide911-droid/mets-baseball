@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import teamConfig from "@/lib/team-config";
 
 type Message = {
   id: string;
@@ -117,7 +118,7 @@ export default function ChatPage() {
           {applicant ? `${applicant.child_name}さんの申込チャット` : "チャット"}
         </h1>
         <p className="text-sm mt-1" style={{ color: "#4169E1" }}>
-          昭島美堀メッツのスタッフに質問・連絡ができます。
+          {teamConfig.teamShortName}のスタッフに質問・連絡ができます。
         </p>
       </div>
 
@@ -125,8 +126,9 @@ export default function ChatPage() {
       {/* 体験日程に関するご案内 */}
       <div className="bg-yellow-50 border border-yellow-300 rounded-xl px-4 py-3 mb-4">
         <p className="text-sm text-yellow-800">
-          ⚾ 体験は1ヶ月を目処に入部可否をお考えください。<br />
-          試合・遠征などと重なると対応できかねるため、体験日はやり取りの上決めさせて頂きます。
+          {teamConfig.trialNote.split("\n").map((line, i) => (
+            <span key={i}>{line}{i < teamConfig.trialNote.split("\n").length - 1 && <br />}</span>
+          ))}
         </p>
       </div>
 

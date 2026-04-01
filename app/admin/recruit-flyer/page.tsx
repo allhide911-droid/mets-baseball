@@ -2,8 +2,9 @@
 
 import FlyerBase, { FlyerData } from "@/components/FlyerBase";
 import { QRCodeSVG } from "qrcode.react";
+import teamConfig from "@/lib/team-config";
 
-const APPLY_URL = "https://mets-baseball.vercel.app/apply";
+const APPLY_URL = `${teamConfig.siteUrl}/apply`;
 
 const fields = [
   { key: "photoDate", label: "撮影日", placeholder: "例：2026.02 撮影", defaultValue: "2026.02 撮影" },
@@ -25,7 +26,7 @@ function TemplatePreview(imageData: string | null, photoDate: string, showQR: bo
       {/* ヘッダー */}
       <div style={{ padding: "10px 16px 12px", borderBottom: "2px solid #1e3a8a" }}>
         <div style={{ color: "#4169E1", fontWeight: 900, fontSize: "clamp(4.5rem, 14.5vw, 5.9rem)", fontStyle: "italic", letterSpacing: "0.03em", textAlign: "center", lineHeight: 1.0 }}>
-          昭島美堀　<em style={{ fontStyle: "italic" }}>Mets</em>
+          {teamConfig.teamShortName}
         </div>
         <div style={{ fontWeight: 900, fontSize: "clamp(3.0rem, 10.5vw, 4.2rem)", letterSpacing: "0.15em", color: "#111", lineHeight: 1.0, textAlign: "center", whiteSpace: "nowrap" }}>
           野球しようぜ！
@@ -106,7 +107,7 @@ function Preview(data: FlyerData, _font: string, _fontSizes: unknown, _alignment
 export default function RecruitFlyerPage() {
   return (
     <FlyerBase
-      storageKey="mets_recruit_flyers"
+      storageKey={`${teamConfig.storagePrefix}_recruit_flyers`}
       title="メンバー募集チラシ作成"
       fields={fields}
       renderPreview={Preview}

@@ -31,6 +31,9 @@ const teamConfig = {
   // ローカルストレージのキー（チームごとに一意にしてください）
   localStorageKey: "mets_chat_id",
 
+  // ローカルストレージのプレフィックス（チームごとに英数字で設定してください）
+  storagePrefix: "mets",
+
   // コピーライト表示年
   copyrightYear: "2026",
 };

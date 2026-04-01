@@ -253,7 +253,7 @@ export default function AdminPage() {
         )}
         {applicants.map((a) => {
           const latest = latestMessages[a.id];
-          const readAt = typeof window !== "undefined" ? localStorage.getItem(`${teamConfig.localStorageKey}_read_${a.id}`) : null;
+          const readAt = typeof window !== "undefined" ? localStorage.getItem(`${teamConfig.storagePrefix}_read_${a.id}`) : null;
           const hasNewMessage = latest?.sender === "applicant" && (!readAt || new Date(latest.created_at) > new Date(readAt));
           const noChat = !latest;
 

@@ -3,8 +3,9 @@
 import FlyerBase, { FlyerData, FontSizes, Alignments } from "@/components/FlyerBase";
 import { QRCodeSVG } from "qrcode.react";
 import { supabase } from "@/lib/supabase";
+import teamConfig from "@/lib/team-config";
 
-const APPLY_URL = "https://mets-baseball.vercel.app/apply";
+const APPLY_URL = `${teamConfig.siteUrl}/apply`;
 
 const fields = [
   { key: "date", label: "日時① *", placeholder: "", datetimerange: true },
@@ -24,7 +25,7 @@ function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, alignment
   return (
     <div className="flyer-preview bg-white rounded-xl shadow-lg p-8 print:shadow-none print:rounded-none print:p-2">
       <div className="mb-4" style={{ textAlign: fa(alignments, "title", "left") as "left"|"center"|"right" }}>
-        <h1 className="font-black text-gray-800 leading-none" style={{ fontSize: "clamp(3.5rem, 14vw, 7rem)" }}>昭島美堀<br />メッツ<br />野球体験会</h1>
+        <h1 className="font-black text-gray-800 leading-none" style={{ fontSize: "clamp(3.5rem, 14vw, 7rem)" }}>{teamConfig.teamShortName}<br />{teamConfig.sport}体験会</h1>
         <p className="font-black text-gray-600 mt-2" style={{ fontSize: "1.3rem" }}>小学生大募集⚾初心者も、女の子も大歓迎✨✨</p>
         {data.comment && (
           <p className="text-gray-700 mt-2 whitespace-pre-wrap" style={{ fontSize: "1rem" }}>{data.comment}</p>
@@ -115,7 +116,7 @@ function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, alignment
       )}
 
       <div className="text-center mt-6 text-xs text-gray-400">
-        昭島美堀メッツ少年野球チーム｜{APPLY_URL}
+        {teamConfig.teamName}｜{APPLY_URL}
       </div>
     </div>
   );
@@ -171,7 +172,7 @@ export default function FlyerPage() {
 
   return (
     <FlyerBase
-      storageKey="mets_trial_flyers"
+      storageKey={`${teamConfig.storagePrefix}_trial_flyers`}
       title="体験会チラシ作成"
       fields={fields}
       renderPreview={Preview}

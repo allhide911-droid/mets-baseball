@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import teamConfig from "@/lib/team-config";
 
 type Message = {
   id: string;
@@ -61,7 +62,7 @@ export default function AdminChatPage() {
     fetchMessages();
     const interval = setInterval(fetchMessages, 5000);
     // チャットを開いたら既読記録
-    localStorage.setItem(`mets_read_${id}`, new Date().toISOString());
+    localStorage.setItem(`${teamConfig.storagePrefix}_read_${id}`, new Date().toISOString());
     return () => clearInterval(interval);
   }, [id]);
 
@@ -69,7 +70,7 @@ export default function AdminChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     // メッセージ取得のたびに既読更新
     if (messages.length > 0) {
-      localStorage.setItem(`mets_read_${id}`, new Date().toISOString());
+      localStorage.setItem(`${teamConfig.storagePrefix}_read_${id}`, new Date().toISOString());
     }
   }, [messages]);
 
