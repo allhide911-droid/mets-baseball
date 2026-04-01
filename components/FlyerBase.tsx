@@ -420,8 +420,19 @@ export default function FlyerBase({ storageKey, title, fields, renderPreview, on
           nav { display: none !important; }
           footer { display: none !important; }
           @page { size: A4 portrait; margin: 5mm; }
-          body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          .flyer-preview { width: 190mm; box-sizing: border-box; page-break-after: avoid; overflow: hidden; }
+          html, body { height: 287mm; overflow: hidden; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .flyer-preview {
+            width: 200mm;
+            max-height: 285mm;
+            overflow: hidden;
+            box-sizing: border-box;
+            page-break-before: avoid;
+            page-break-after: avoid;
+            page-break-inside: avoid;
+            break-before: avoid;
+            break-after: avoid;
+            break-inside: avoid;
+          }
           .flyer-preview ~ * { display: none !important; }
           .flyer-recruit { zoom: 0.93; }
         }

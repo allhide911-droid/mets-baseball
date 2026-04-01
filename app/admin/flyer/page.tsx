@@ -31,7 +31,7 @@ function Preview(data: FlyerData, _font: string, fontSizes: FontSizes, alignment
         )}
       </div>
 
-      <style>{`@media print { .flyer-table td { padding-top: 4px !important; padding-bottom: 4px !important; } .flyer-table-wrap { padding: 8px !important; margin-bottom: 8px !important; } .flyer-preview { max-height: 277mm; overflow: hidden; page-break-after: avoid; } }`}</style>
+      <style>{`@media print { .flyer-table td { padding-top: 4px !important; padding-bottom: 4px !important; } .flyer-table-wrap { padding: 8px !important; margin-bottom: 8px !important; } .flyer-preview { max-height: 285mm !important; overflow: hidden !important; page-break-before: avoid !important; page-break-after: avoid !important; page-break-inside: avoid !important; break-before: avoid !important; break-after: avoid !important; break-inside: avoid !important; } }`}</style>
       <div className="flyer-table-wrap bg-blue-50 rounded-xl p-6 mb-6">
         <table className="flyer-table w-full">
           <tbody>
