@@ -212,6 +212,12 @@ export default function AdminPage() {
         >
           📝 コンテンツを管理する
         </Link>
+        <Link
+          href="/admin/manual"
+          className="inline-block bg-gray-600 text-white font-bold px-6 py-2 rounded-full hover:bg-gray-700 transition text-sm"
+        >
+          📖 操作マニュアル
+        </Link>
       </div>
 
 
