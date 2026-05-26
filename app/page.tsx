@@ -36,11 +36,11 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-4">
           <a href="/Baseball_Rules.pdf" target="_blank" rel="noreferrer" className="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex flex-col items-center gap-3 hover:bg-blue-100 transition">
             <span className="text-4xl">&#x1F4D6;</span>
-            <span className="font-bold text-gray-700 text-sm text-center">わくわくルールクイズ</span>
+            <span className="font-bold text-gray-700 text-sm text-center">野球ルール大冒険</span>
           </a>
           <a href="/Youth_Baseball_Playbook.pdf" target="_blank" rel="noreferrer" className="bg-blue-50 border border-blue-100 rounded-2xl p-6 flex flex-col items-center gap-3 hover:bg-blue-100 transition">
             <span className="text-4xl">&#x1F3C3;</span>
-            <span className="font-bold text-gray-700 text-sm text-center">親子で練習メニュー</span>
+            <span className="font-bold text-gray-700 text-sm text-center">親子で楽しむ！野球練習メニュー</span>
           </a>
         </div>
       </section>
