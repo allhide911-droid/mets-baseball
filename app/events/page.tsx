@@ -14,12 +14,32 @@ function parseYM(text: string): number {
 
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.from("events").select("*").then(({ data }) => {
-      const sorted = ((data as Event[]) ?? []).sort((a, b) => parseYM(a.date) - parseYM(b.date));
-      setEvents(sorted);
-    });
+    const fetch = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error: queryError } = await supabase.from("events").select("*");
+        if (queryError) console.error("Failed to fetch events:", queryError);
+
+        const sorted = ((data as Event[]) ?? []).sort((a, b) => parseYM(a.date) - parseYM(b.date));
+        setEvents(sorted);
+
+        if (queryError) {
+          setError("データの取得に失敗しました。時間をおいて再度お試しください。");
+        }
+      } catch (e) {
+        console.error("Failed to fetch events:", e);
+        setError("データの取得に失敗しました。");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetch();
   }, []);
 
   return (
@@ -27,17 +47,24 @@ export default function EventsPage() {
       <h1 className="text-3xl font-bold text-gray-800 mb-2">イベント</h1>
       <p className="text-gray-500 mb-10">チームで実施したイベントをご紹介します。</p>
 
-      <div className="flex flex-col gap-4">
-        {events.map((e) => (
-          <div key={e.id} className="bg-white rounded-xl shadow p-5 flex gap-4">
-            <div className="text-sm text-gray-400 w-36 flex-shrink-0 pt-0.5 whitespace-nowrap">{e.date}</div>
-            <div>
-              <p className="font-bold text-gray-800">{e.name}</p>
+      {loading ? (
+        <p className="text-center text-gray-400 py-10">読み込み中...</p>
+      ) : error ? (
+        <p className="text-center text-red-600 text-sm py-10">{error}</p>
+      ) : events.length === 0 ? (
+        <p className="text-center text-gray-400 py-10">データがありません</p>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {events.map((e) => (
+            <div key={e.id} className="bg-white rounded-xl shadow p-5 flex gap-4">
+              <div className="text-sm text-gray-400 w-36 flex-shrink-0 pt-0.5 whitespace-nowrap">{e.date}</div>
+              <div>
+                <p className="font-bold text-gray-800">{e.name}</p>
+              </div>
             </div>
-          </div>
-        ))}
-        {events.length === 0 && <p className="text-center text-gray-400 py-6">読み込み中...</p>}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

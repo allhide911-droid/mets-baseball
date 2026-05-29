@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 type Tournament = { id: string; year_month: string; name: string; result: string; sort_order: number; };
 
 function parseYM(text: string): number {
-  const normalized = text.replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+  const normalized = text.replace(/[０-９]/g, (c: string) => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
   const m = normalized.match(/(\d+)年(\d+)月/);
   if (!m) return 0;
   return parseInt(m[1]) * 100 + parseInt(m[2]);

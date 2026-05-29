@@ -30,21 +30,39 @@ type Event = { id: string; date: string; name: string; sort_order: number; };
 function AboutTab() {
   const [form, setForm] = useState({ description: "", founded_year: "", member_count: "", practice_days: "", practice_location: "" });
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    supabase.from("team_info").select("*").eq("id", 1).single().then(({ data }) => {
-      if (data) setForm({ description: data.description ?? "", founded_year: data.founded_year ?? "", member_count: data.member_count ?? "", practice_days: data.practice_days ?? "", practice_location: data.practice_location ?? "" });
-    });
+    const load = async () => {
+      setLoading(true);
+      const { data, error } = await supabase.from("team_info").select("*").eq("id", 1).single();
+      if (error) {
+        console.error("team_info load error:", error);
+      }
+      if (data) {
+        setForm({
+          description: data.description ?? "",
+          founded_year: data.founded_year ?? "",
+          member_count: data.member_count ?? "",
+          practice_days: data.practice_days ?? "",
+          practice_location: data.practice_location ?? "",
+        });
+      }
+      setLoading(false);
+    };
+    load();
   }, []);
 
   const handleSave = async () => {
     setSaving(true);
-    const { error } = await supabase.from("team_info").upsert({ id: 1, ...form });
+    const { error } = await supabase.from("team_info").upsert({ id: 1, ...form }, { onConflict: "id" });
     setSaving(false);
-    setMsg(error ? "❌ 保存に失敗しました" : "✅ 保存しました");
+    setMsg(error ? "❌ 保存に失敗しました: " + error.message : "✅ 保存しました");
     setTimeout(() => setMsg(""), 3000);
   };
+
+  if (loading) return <p className="text-sm text-gray-400 py-4">読み込み中...</p>;
 
   return (
     <div className="space-y-4">
@@ -261,8 +279,17 @@ function ResultsTab() {
 
   const handleSave = async () => {
     if (!form.year_month || !form.name || !form.result) return;
-    if (editId) { await supabase.from("tournaments").update(form).eq("id", editId); }
-    else { await supabase.from("tournaments").insert({ ...form, sort_order: items.length }); }
+    let error;
+    if (editId) {
+      ({ error } = await supabase.from("tournaments").update(form).eq("id", editId));
+    } else {
+      ({ error } = await supabase.from("tournaments").insert({ ...form, sort_order: items.length }));
+    }
+    if (error) {
+      setMsg("❌ 保存に失敗しました: " + error.message);
+      setTimeout(() => setMsg(""), 5000);
+      return;
+    }
     setForm({ year_month: "", name: "", result: "" }); setEditId(null); setAdding(false);
     await load(); setMsg("✅ 保存しました"); setTimeout(() => setMsg(""), 2000);
   };
