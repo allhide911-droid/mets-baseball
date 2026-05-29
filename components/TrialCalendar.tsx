@@ -43,7 +43,9 @@ export default function TrialCalendar() {
 
   useEffect(() => {
     const fetch = async () => {
-      const { data: trialData } = await supabase.from("trials").select("*");
+      const { data: trialData, error: trialError } = await supabase.from("trials").select("*");
+      console.log("[TrialCalendar] trialData:", trialData);
+      console.log("[TrialCalendar] trialError:", trialError);
       const { data: appData } = await supabase.from("applicants").select("trial_date");
       setTrials((trialData as Trial[]) || []);
       setApplicants((appData as Applicant[]) || []);
