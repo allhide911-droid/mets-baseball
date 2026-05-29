@@ -2,10 +2,9 @@ import { Resend } from "resend";
 import { supabase } from "@/lib/supabase";
 import teamConfig from "@/lib/team-config";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: Request) {
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const body = await request.json();
     const { childName, childGrade, parentName, trialDate, message } = body;
 
