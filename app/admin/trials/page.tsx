@@ -10,6 +10,7 @@ type Trial = {
   date: string;
   start_time: string;
   location: string;
+  participants: number | null;
   meeting_point: string | null;
   items_to_bring: string | null;
   notes: string | null;
@@ -17,6 +18,7 @@ type Trial = {
 
 export default function AdminTrialsPage() {
   const [trials, setTrials] = useState<Trial[]>([]);
+  const [participantsMap, setParticipantsMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -31,6 +33,7 @@ export default function AdminTrialsPage() {
     date: "",
     start_time: "",
     location: "",
+    participants: "",
     items_to_bring: "",
     notes: "",
   });
@@ -45,6 +48,9 @@ export default function AdminTrialsPage() {
       .select("*");
     const sorted = ((data as Trial[]) || []).sort((a, b) => a.date.localeCompare(b.date));
     setTrials(sorted);
+    const map: Record<string, string> = {};
+    sorted.forEach(t => { map[t.id] = t.participants != null ? String(t.participants) : ""; });
+    setParticipantsMap(map);
     setLoading(false);
   };
 
@@ -59,13 +65,14 @@ export default function AdminTrialsPage() {
       date: form.date,
       start_time: form.start_time,
       location: form.location,
+      participants: form.participants !== "" ? parseInt(form.participants, 10) : null,
       items_to_bring: form.items_to_bring || null,
       notes: form.notes || null,
     });
     if (err) {
       setError("保存に失敗しました: " + err.message);
     } else {
-      setForm({ date: "", start_time: "", location: "", items_to_bring: "", notes: "" });
+      setForm({ date: "", start_time: "", location: "", participants: "", items_to_bring: "", notes: "" });
       await fetchTrials();
     }
     setSaving(false);
@@ -77,11 +84,20 @@ export default function AdminTrialsPage() {
     await fetchTrials();
   };
 
+  const handleUpdateParticipants = async (id: string) => {
+    const val = participantsMap[id];
+    const num = val === "" ? null : parseInt(val, 10);
+    if (val !== "" && isNaN(num!)) return;
+    await supabase.from("trials").update({ participants: num }).eq("id", id);
+    await fetchTrials();
+  };
+
   const handleDuplicate = (t: Trial) => {
     setForm({
       date: t.date,
       start_time: t.start_time,
       location: t.location,
+      participants: t.participants != null ? String(t.participants) : "",
       items_to_bring: t.items_to_bring || "",
       notes: t.notes || "",
     });
@@ -128,6 +144,12 @@ export default function AdminTrialsPage() {
             </select>
           </div>
           <div>
+            <label className="block text-sm font-bold text-gray-700 mb-1">参加人数</label>
+            <input type="number" min="0" value={form.participants} onChange={e => setForm({ ...form, participants: e.target.value })}
+              placeholder="例：7"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+          <div>
             <label className="block text-sm font-bold text-gray-700 mb-1">持ち物</label>
             <input type="text" value={form.items_to_bring} onChange={e => setForm({ ...form, items_to_bring: e.target.value })}
               placeholder="例：動きやすい服装、水筒"
@@ -163,6 +185,19 @@ export default function AdminTrialsPage() {
                 {t.meeting_point && <p className="text-sm text-gray-500">🚩 {t.meeting_point}</p>}
                 {t.items_to_bring && <p className="text-sm text-gray-500">🎒 {t.items_to_bring}</p>}
                 {t.notes && <p className="text-sm text-gray-500">📝 {t.notes}</p>}
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-sm text-gray-500">👥 参加人数：</span>
+                  <input
+                    type="number" min="0"
+                    value={participantsMap[t.id] ?? ""}
+                    onChange={e => setParticipantsMap(m => ({ ...m, [t.id]: e.target.value }))}
+                    placeholder="0"
+                    className="w-16 border border-gray-300 rounded px-2 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400"
+                  />
+                  <span className="text-sm text-gray-500">名</span>
+                  <button onClick={() => handleUpdateParticipants(t.id)}
+                    className="text-blue-600 text-xs font-bold hover:underline">保存</button>
+                </div>
               </div>
               <div className="flex flex-col gap-2">
                 <button onClick={() => handleDuplicate(t)}
