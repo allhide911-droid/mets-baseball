@@ -8,6 +8,7 @@ type Trial = {
   date: string; // YYYY-MM-DD
   start_time: string;
   location: string;
+  participants: number | null;
 };
 
 type Applicant = {
@@ -42,7 +43,7 @@ export default function TrialCalendar() {
 
   useEffect(() => {
     const fetch = async () => {
-      const { data: trialData } = await supabase.from("trials").select("date, start_time, location");
+      const { data: trialData } = await supabase.from("trials").select("date, start_time, location, participants");
       const { data: appData } = await supabase.from("applicants").select("trial_date");
       setTrials((trialData as Trial[]) || []);
       setApplicants((appData as Applicant[]) || []);
@@ -162,6 +163,9 @@ export default function TrialCalendar() {
             <div key={i} className="bg-blue-50 rounded-lg p-3 text-sm">
               <p className="font-bold text-blue-700">⚾ 体験会</p>
               <p className="text-gray-700">{t.start_time.slice(0, 5)}〜 / {t.location}</p>
+              {t.participants != null && (
+                <p className="text-gray-500 mt-1">参加人数：{t.participants}名</p>
+              )}
             </div>
           ))}
           {selectedApplicantCount > 0 && (
