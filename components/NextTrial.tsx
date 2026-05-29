@@ -24,9 +24,9 @@ export default function NextTrial() {
       const { data } = await supabase
         .from("trials")
         .select("date, start_time, location, items_to_bring, notes")
-        .gte("date", today)
-        .order("date", { ascending: true });
-      setTrials(data ?? []);
+        .gte("date", today);
+      const sorted = (data ?? []).sort((a, b) => a.date.localeCompare(b.date));
+      setTrials(sorted);
       setLoading(false);
     };
     fetch();
