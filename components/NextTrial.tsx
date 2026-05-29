@@ -23,7 +23,7 @@ export default function NextTrial() {
       const today = new Date().toISOString().split("T")[0];
       const { data } = await supabase
         .from("trials")
-        .select("date, start_time, location, items_to_bring, notes")
+        .select("*")
         .gte("date", today);
       const sorted = (data ?? []).sort((a, b) => a.date.localeCompare(b.date));
       setTrials(sorted);

@@ -28,11 +28,10 @@ export default function ApplyPage() {
     const fetchTrials = async () => {
       const { data } = await supabase
         .from("trials")
-        .select("date, start_time")
-        .order("date", { ascending: true });
+        .select("*");
       if (data) {
         const days = ["日", "月", "火", "水", "木", "金", "土"];
-        const dates = data.map((t: { date: string; start_time: string }) => {
+        const dates = [...data].sort((a, b) => a.date.localeCompare(b.date)).map((t: { date: string; start_time: string }) => {
           const d = new Date(t.date);
           const label = `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日（${days[d.getDay()]}）${t.start_time.slice(0, 5)}〜`;
           return label;

@@ -42,9 +42,9 @@ export default function AdminTrialsPage() {
   const fetchTrials = async () => {
     const { data } = await supabase
       .from("trials")
-      .select("*")
-      .order("date", { ascending: true });
-    setTrials((data as Trial[]) || []);
+      .select("*");
+    const sorted = ((data as Trial[]) || []).sort((a, b) => a.date.localeCompare(b.date));
+    setTrials(sorted);
     setLoading(false);
   };
 

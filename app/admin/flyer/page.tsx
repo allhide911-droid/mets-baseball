@@ -148,7 +148,7 @@ export default function FlyerPage() {
 
       const { data: existing } = await supabase
         .from("trials")
-        .select("id")
+        .select("*")
         .eq("date", parsed.date)
         .eq("start_time", parsed.start_time)
         .eq("location", data.location);
