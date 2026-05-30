@@ -5,6 +5,7 @@ import TrialCalendar from "@/components/TrialCalendar";
 import NextTrial from "@/components/NextTrial";
 import ResumeChatBanner from "@/components/ResumeChatBanner";
 import teamConfig from "@/lib/team-config";
+import VisitorCount from "@/components/VisitorCount";
 
 export default function Home() {
   return (
@@ -51,6 +52,7 @@ export default function Home() {
           <NextTrial />
         </div>
       </section>
+      <VisitorCount />
     </div>
   );
 }
