@@ -1,7 +1,3 @@
--- 【不要】このファイルは誤った前提で作成されました。
--- trialsテーブルの参加人数カラムは walk_in_count という名前で既に存在しています。
--- コード側を walk_in_count に統一したため、このマイグレーションは不要です。
---
--- もし将来カラム名を participants に統一したい場合は以下を実行してください：
--- ALTER TABLE trials RENAME COLUMN walk_in_count TO participants;
--- （その場合はコード側も participants に戻す必要があります）
+-- trials テーブルの walk_in_count カラムを participants にリネームするマイグレーション
+-- Supabase の SQL Editor で実行してください。
+ALTER TABLE trials RENAME COLUMN walk_in_count TO participants;

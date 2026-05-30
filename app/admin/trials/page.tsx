@@ -10,7 +10,7 @@ type Trial = {
   date: string;
   start_time: string;
   location: string;
-  walk_in_count: number | null;
+  participants: number | null;
   meeting_point: string | null;
   items_to_bring: string | null;
   notes: string | null;
@@ -49,7 +49,7 @@ export default function AdminTrialsPage() {
     const sorted = ((data as Trial[]) || []).sort((a, b) => a.date.localeCompare(b.date));
     setTrials(sorted);
     const map: Record<string, string> = {};
-    sorted.forEach(t => { map[t.id] = t.walk_in_count != null ? String(t.walk_in_count) : ""; });
+    sorted.forEach(t => { map[t.id] = t.participants != null ? String(t.participants) : ""; });
     setParticipantsMap(map);
     setLoading(false);
   };
@@ -65,7 +65,7 @@ export default function AdminTrialsPage() {
       date: form.date,
       start_time: form.start_time,
       location: form.location,
-      walk_in_count: form.participants !== "" ? parseInt(form.participants, 10) : null,
+      participants: form.participants !== "" ? parseInt(form.participants, 10) : null,
       items_to_bring: form.items_to_bring || null,
       notes: form.notes || null,
     });
@@ -88,7 +88,7 @@ export default function AdminTrialsPage() {
     const val = participantsMap[id];
     const num = val === "" ? null : parseInt(val, 10);
     if (val !== "" && isNaN(num!)) return;
-    await supabase.from("trials").update({ walk_in_count: num }).eq("id", id);
+    await supabase.from("trials").update({ participants: num }).eq("id", id);
     await fetchTrials();
   };
 
@@ -97,7 +97,7 @@ export default function AdminTrialsPage() {
       date: t.date,
       start_time: t.start_time,
       location: t.location,
-      participants: t.walk_in_count != null ? String(t.walk_in_count) : "",
+      participants: t.participants != null ? String(t.participants) : "",
       items_to_bring: t.items_to_bring || "",
       notes: t.notes || "",
     });
