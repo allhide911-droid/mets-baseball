@@ -8,7 +8,7 @@ type Trial = {
   date: string; // YYYY-MM-DD
   start_time: string;
   location: string;
-  participants: number | null;
+  walk_in_count: number | null;
 };
 
 type Applicant = {
@@ -164,8 +164,8 @@ export default function TrialCalendar() {
             <div key={i} className="bg-blue-50 rounded-lg p-3 text-sm">
               <p className="font-bold text-blue-700">⚾ 体験会</p>
               <p className="text-gray-700">{t.start_time.slice(0, 5)}〜 / {t.location}</p>
-              {t.participants != null && (
-                <p className="text-gray-500 mt-1">参加人数：{t.participants}名</p>
+              {t.walk_in_count != null && (
+                <p className="text-gray-500 mt-1">参加人数：{t.walk_in_count}名</p>
               )}
             </div>
           ))}

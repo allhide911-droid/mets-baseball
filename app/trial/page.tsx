@@ -9,7 +9,7 @@ type Trial = {
   date: string;
   start_time: string;
   location: string;
-  participants: number | null;
+  walk_in_count: number | null;
   meeting_point: string | null;
   items_to_bring: string | null;
   notes: string | null;
@@ -78,10 +78,10 @@ export default function TrialPage() {
                   <span className="text-gray-500 font-bold">📍 場所：</span>
                   <span className="text-gray-700">{trial.location}</span>
                 </div>
-                {trial.participants != null && (
+                {trial.walk_in_count != null && (
                   <div className="bg-gray-50 rounded-lg p-3">
                     <span className="text-gray-500 font-bold">👥 参加人数：</span>
-                    <span className="text-gray-700">{trial.participants}名</span>
+                    <span className="text-gray-700">{trial.walk_in_count}名</span>
                   </div>
                 )}
                 {trial.meeting_point && (
