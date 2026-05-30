@@ -25,6 +25,7 @@ export default function Home() {
         </div>
         <div className="absolute bottom-4 right-4">
           <Link href="/admin" className="text-white/40 text-xs hover:text-white/70 transition">管理者ログイン</Link>
+         <VisitorCount />
         </div>
       </section>
       <section className="max-w-5xl mx-auto px-4 pt-6"><ResumeChatBanner /></section>
@@ -52,7 +53,6 @@ export default function Home() {
           <NextTrial />
         </div>
       </section>
-      <VisitorCount />
     </div>
   );
 }
