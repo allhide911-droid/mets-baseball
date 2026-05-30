@@ -43,7 +43,7 @@ export default function AdminChatPage() {
         .from("applicants")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle();
       if (data) setApplicant(data as Applicant);
     };
     fetchApplicant();
