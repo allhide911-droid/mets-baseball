@@ -122,6 +122,12 @@ export default function AdminChatPage() {
         )}
       </div>
 
+      {/* お知らせバナー */}
+      <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-gray-700">
+        右上メニューから<strong>チーム紹介・費用・FAQ・大会実績・イベント・体験会日程</strong>がご覧いただけます。<br />
+        体験は１ヶ月を目処に入部可否をお考えください。試合・遠征などと重なると対応できかねるため、体験日はやり取りの上決めさせて頂きます。
+      </div>
+
       {applicant && (
         <div className="mt-4 mb-6">
           <h1 className="text-2xl font-bold" style={{ color: "#000000" }}>
