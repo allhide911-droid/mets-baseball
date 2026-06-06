@@ -30,6 +30,7 @@ export default function AdminChatPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const isFirstLoad = useRef(true);
 
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("admin_auth") !== "true") {
@@ -61,14 +62,15 @@ export default function AdminChatPage() {
   useEffect(() => {
     fetchMessages();
     const interval = setInterval(fetchMessages, 5000);
-    // チャットを開いたら既読記録
     localStorage.setItem(`${teamConfig.storagePrefix}_read_${id}`, new Date().toISOString());
     return () => clearInterval(interval);
   }, [id]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    // メッセージ取得のたびに既読更新
+    if (isFirstLoad.current && messages.length > 0) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      isFirstLoad.current = false;
+    }
     if (messages.length > 0) {
       localStorage.setItem(`${teamConfig.storagePrefix}_read_${id}`, new Date().toISOString());
     }
@@ -85,6 +87,7 @@ export default function AdminChatPage() {
     setInput("");
     setSending(false);
     fetchMessages();
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleUndo = async () => {
