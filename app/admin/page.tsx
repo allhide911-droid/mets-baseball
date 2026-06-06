@@ -59,8 +59,6 @@ export default function AdminPage() {
 
     if (applicantData) {
       setApplicants(applicantData as Applicant[]);
-
-      // 各申込者の最新メッセージを取得
       const { data: msgData } = await supabase
         .from("messages")
         .select("applicant_id, sender, content, created_at")
@@ -188,38 +186,22 @@ export default function AdminPage() {
 
       {/* 管理メニュー */}
       <div className="mb-6 flex flex-wrap gap-3">
-        <Link
-          href="/admin/trials"
-          className="inline-block bg-green-600 text-white font-bold px-6 py-2 rounded-full hover:bg-green-700 transition text-sm"
-        >
+        <Link href="/admin/trials" className="inline-block bg-green-600 text-white font-bold px-6 py-2 rounded-full hover:bg-green-700 transition text-sm">
           ⚾ 体験会を管理する
         </Link>
-        <Link
-          href="/admin/flyer"
-          className="inline-block bg-orange-500 text-white font-bold px-6 py-2 rounded-full hover:bg-orange-600 transition text-sm"
-        >
+        <Link href="/admin/flyer" className="inline-block bg-orange-500 text-white font-bold px-6 py-2 rounded-full hover:bg-orange-600 transition text-sm">
           🖨️ 体験会チラシを作成
         </Link>
-        <Link
-          href="/admin/recruit-flyer"
-          className="inline-block bg-purple-600 text-white font-bold px-6 py-2 rounded-full hover:bg-purple-700 transition text-sm"
-        >
+        <Link href="/admin/recruit-flyer" className="inline-block bg-purple-600 text-white font-bold px-6 py-2 rounded-full hover:bg-purple-700 transition text-sm">
           📣 メンバー募集チラシを作成
         </Link>
-        <Link
-          href="/admin/content"
-          className="inline-block bg-teal-600 text-white font-bold px-6 py-2 rounded-full hover:bg-teal-700 transition text-sm"
-        >
+        <Link href="/admin/content" className="inline-block bg-teal-600 text-white font-bold px-6 py-2 rounded-full hover:bg-teal-700 transition text-sm">
           📝 コンテンツを管理する
         </Link>
-        <Link
-          href="/admin/manual"
-          className="inline-block bg-gray-600 text-white font-bold px-6 py-2 rounded-full hover:bg-gray-700 transition text-sm"
-        >
+        <Link href="/admin/manual" className="inline-block bg-gray-600 text-white font-bold px-6 py-2 rounded-full hover:bg-gray-700 transition text-sm">
           📖 操作マニュアル
         </Link>
       </div>
-
 
       <h2 className="text-lg font-bold mb-4" style={{ color: "#4169E1" }}>
         申込者一覧（{applicants.length}件）
@@ -260,67 +242,54 @@ export default function AdminPage() {
         {applicants.map((a) => {
           const latest = latestMessages[a.id];
           const readAt = typeof window !== "undefined" ? localStorage.getItem(`${teamConfig.storagePrefix}_read_${a.id}`) : null;
-          const hasNewMessage = latest?.sender === "applicant" && (!readAt || new Date(latest.created_at) > new Date(readAt));
-          const noChat = !latest;
 
           return (
-            <div
-              key={a.id}
-              className="bg-white rounded-xl shadow p-4 flex items-center justify-between"
-            >
-              <input
-                type="checkbox"
-                checked={selectedIds.has(a.id)}
-                onChange={() => toggleSelect(a.id)}
-                className="w-4 h-4 mr-3 flex-shrink-0 accent-blue-600"
-              />
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
+            <div key={a.id} className="bg-white rounded-xl shadow p-4">
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(a.id)}
+                  onChange={() => toggleSelect(a.id)}
+                  className="w-4 h-4 mr-3 mt-1 flex-shrink-0 accent-blue-600"
+                />
+                <div className="flex-1 min-w-0">
                   <p className="text-base font-bold" style={{ color: "#000000" }}>
                     {a.child_name}{" "}
                     <span className="text-sm font-semibold" style={{ color: "#222222" }}>（{a.child_grade}）</span>
                   </p>
+                  <p className="text-sm font-medium" style={{ color: "#222222" }}>保護者：{a.parent_name}</p>
+                  <p className="text-sm font-medium" style={{ color: "#222222" }}>希望日：{a.trial_date || "未定"}</p>
+                  <p className="text-sm font-medium" style={{ color: "#222222" }}>{new Date(a.created_at).toLocaleDateString("ja-JP")} 申込</p>
+                  {latest && (
+                    <div className="mt-1 px-2 py-1 bg-gray-50 rounded-lg">
+                      <p className="text-xs font-bold mb-0.5" style={{ color: latest.sender === "applicant" ? "#2563eb" : "#16a34a" }}>
+                        {latest.sender === "applicant" ? "👤 申込者" : "🟢 スタッフ"}
+                        <span className="font-normal text-gray-400 ml-2">
+                          {new Date(latest.created_at).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </p>
+                      <p className="text-sm truncate" style={{ color: "#444444" }}>{latest.content}</p>
+                    </div>
+                  )}
                 </div>
-                <p className="text-sm font-medium" style={{ color: "#222222" }}>保護者：{a.parent_name}</p>
-                <p className="text-sm font-medium" style={{ color: "#222222" }}>
-                  希望日：{a.trial_date || "未定"}
-                </p>
-                <p className="text-sm font-medium" style={{ color: "#222222" }}>
-                  {new Date(a.created_at).toLocaleDateString("ja-JP")} 申込
-                </p>
-                {latest && (
-                  <div className="mt-1 px-2 py-1 bg-gray-50 rounded-lg max-w-xs">
-                    <p className="text-xs font-bold mb-0.5" style={{ color: latest.sender === "applicant" ? "#2563eb" : "#16a34a" }}>
-                      {latest.sender === "applicant" ? "👤 申込者" : "🟢 スタッフ"}
-                      <span className="font-normal text-gray-400 ml-2">
-                        {new Date(latest.created_at).toLocaleString("ja-JP", {
-                          month: "numeric",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </p>
-                    <p className="text-sm truncate" style={{ color: "#444444" }}>{latest.content}</p>
-                  </div>
-                )}
               </div>
-              <div className="flex flex-col gap-2 ml-4">
+              {/* ボタンをカード下部に横並び */}
+              <div className="flex gap-2 mt-3">
                 <Link
                   href={`/admin/chat/${a.id}`}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition whitespace-nowrap text-center"
+                  className="flex-1 bg-blue-600 text-white py-2 rounded-full text-xs font-bold hover:bg-blue-700 transition text-center"
                 >
                   チャットを開く
                 </Link>
                 <button
                   onClick={() => handleUndoLastMessage(a.id)}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-yellow-600 transition whitespace-nowrap"
+                  className="flex-1 bg-yellow-500 text-white py-2 rounded-full text-xs font-bold hover:bg-yellow-600 transition"
                 >
                   ↩ 1つ前に戻す
                 </button>
                 <button
                   onClick={() => handleDeleteApplicant(a.id, a.child_name)}
-                  className="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-red-600 transition whitespace-nowrap"
+                  className="flex-1 bg-red-500 text-white py-2 rounded-full text-xs font-bold hover:bg-red-600 transition"
                 >
                   削除
                 </button>
